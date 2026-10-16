@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Maaz's Number Quest</title>
+<title>Maaz's Maths Quest</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -220,6 +220,41 @@ mark{background:var(--accent);color:#2B2100;border-radius:6px;padding:0 4px}
 .foot{font-size:13px;color:var(--muted);text-align:center}
 .confetti{position:fixed;width:10px;height:14px;border-radius:2px;pointer-events:none;z-index:50;animation:fall 1s ease-out forwards}
 @keyframes fall{to{transform:translate(var(--dx),var(--dy)) rotate(540deg);opacity:0}}
+/* unit tabs + unit 2 */
+.units{display:flex;gap:8px;flex-wrap:wrap}
+.units button{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 16px;font-weight:700;font-size:15px}
+.units button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tribox,.gbox,.rbox,.sqbox{display:flex;justify-content:center}
+.tri{width:100%;height:auto}
+.tools{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.tools button{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-weight:700;font-size:14px}
+.tools button.on{background:#E8262B;color:#fff;border-color:#E8262B}
+.diagram .symline{stroke:#E8262B;stroke-width:3;stroke-dasharray:8 5}
+.diagram .gridl{stroke:var(--c2);stroke-opacity:.35;stroke-width:1}
+.diagram .mirror{stroke:var(--ink);stroke-width:2.5;stroke-dasharray:6 5}
+.diagram .mirror.hot{stroke:#E8262B;stroke-width:4}
+.tcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.tcard{position:relative;background:var(--surface-2);border:3px solid var(--line);border-radius:12px;padding:26px 6px 8px;display:grid;place-items:center;min-height:120px}
+.tcard svg{max-height:120px}
+.tcard.pick{border-color:var(--gc);background:var(--accent-soft)}
+.tcard .tl{position:absolute;top:6px;left:10px;font-family:var(--display);font-weight:700;font-size:18px}
+.tcards.static .tcard{cursor:default}
+.palette{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.sw{width:46px;height:46px;border-radius:12px;border:2px solid var(--line)}
+.sw.on{outline:3px solid var(--ink);outline-offset:2px}
+.sw-txt{width:auto;padding:0 14px;font-weight:700;background:var(--surface)}
+.p8{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));width:100%;max-width:400px;margin:0 auto;border:2px solid var(--ink);background:var(--surface)}
+.p8 button{aspect-ratio:1;border:1px solid var(--line);padding:0;font-family:var(--display);font-weight:700;font-size:17px;background:var(--surface);color:var(--ink);min-width:0}
+.p8 button.mv{border-right:3px dashed #E8262B}
+.p8 button.mh{border-bottom:3px dashed #E8262B}
+.p8 button.no{box-shadow:inset 0 0 0 3px var(--bad)}
+.p8 button:disabled{cursor:default}
+.builder .bdot{fill:var(--muted)}
+.builder .bpoly{fill:var(--accent);fill-opacity:.35;stroke:var(--ink);stroke-width:3;stroke-linejoin:round}
+.builder .vx{stroke:var(--surface);stroke-width:3;cursor:grab}
+.builder .vx.sel{stroke:var(--ink);stroke-width:4}
+.found{display:flex;flex-wrap:wrap;gap:8px}
+.found svg{width:72px;height:72px}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -264,22 +299,24 @@ const GAMES=[
  {id:'puzzle',col:'var(--c8)',sec:'mix',title:'Puzzle Room',badge:'0.37',blurb:'Clue cards, Zara, Marcus and the four friends.',src:'Think like a mathematician · Exercise 1.2 Q4–Q7 · Check your progress Q5, Q8',run:runPuzzle},
 ];
 const SECS=[
- {k:'1.1',c:'var(--c2)',title:'Understanding place value',p:'Tenths and hundredths, and multiplying and dividing by 10, 100 and 1000.'},
- {k:'1.2',c:'var(--c7)',title:'Rounding decimal numbers',p:'Round numbers with 1 decimal place to the nearest whole number.'},
- {k:'mix',c:'var(--c8)',tag:'1.1 + 1.2',title:'Challenge',p:'Puzzles that use both lessons.'},
+ {k:'1.1',unit:1,c:'var(--c2)',title:'Understanding place value',p:'Tenths and hundredths, and multiplying and dividing by 10, 100 and 1000.'},
+ {k:'1.2',unit:1,c:'var(--c7)',title:'Rounding decimal numbers',p:'Round numbers with 1 decimal place to the nearest whole number.'},
+ {k:'mix',unit:1,c:'var(--c8)',tag:'1.1 + 1.2',title:'Challenge',p:'Puzzles that use both lessons.'},
 ];
 const app=document.getElementById('app');
 const best=()=>store.get('best',{});
 
 function renderHub(){
   app.style.removeProperty('--gc');
-  const b=best();const total=Object.values(b).reduce((s,x)=>s+x,0);
-  app.innerHTML=`<header class="top"><div><div class="eyebrow">Grade 5 · Unit 1 The number system</div><h1><span class="hl">Maaz's</span> ${rainbow('Number Quest')}</h1></div>
+  const unit=store.get('unit',1);const b=best();const total=Object.values(b).reduce((s,x)=>s+x,0);
+  app.innerHTML=`<header class="top"><div><div class="eyebrow">Grade 5 · Cambridge Primary Mathematics</div><h1><span class="hl">Maaz's</span> ${rainbow('Maths Quest')}</h1></div>
    <div class="starcount" title="Stars earned">${star(true)}<span class="num">${total} / ${GAMES.length*3}</span></div></header>
-   ${SECS.map(s=>`<section class="lesson" style="--lc:${s.c}"><div class="lesson-head"><span class="tag">${s.tag||s.k}</span><h2>${s.title}</h2><p>${s.p}</p></div>
+   <div class="units" role="tablist">${[[1,'Unit 1 · The number system'],[2,'Unit 2 · 2D shape and pattern']].map(([u,t])=>`<button type="button" role="tab" data-u="${u}" class="${u===unit?'on':''}" aria-selected="${u===unit}">${t}</button>`).join('')}</div>
+   ${SECS.filter(s=>s.unit===unit).map(s=>`<section class="lesson" style="--lc:${s.c}"><div class="lesson-head"><span class="tag">${s.tag||s.k}</span><h2>${s.title}</h2><p>${s.p}</p></div>
    <div class="tiles">${GAMES.filter(g=>g.sec===s.k).map(g=>`<button class="tile" type="button" style="--tc:${g.col}" data-g="${g.id}"><span class="badge">${g.badge}</span><h3>${g.title}</h3><p>${g.blurb}</p><span class="stars">${[1,2,3].map(n=>star((b[g.id]||0)>=n)).join('')}</span></button>`).join('')}</div></section>`).join('')}
-   <p class="foot">Questions follow Cambridge Primary Mathematics Learner's Book 5, sections 1.1 and 1.2.</p>`;
+   <p class="foot">Questions follow Cambridge Primary Mathematics Learner's Book 5, Units 1 and 2.</p>`;
   app.querySelectorAll('.tile').forEach(t=>t.onclick=()=>openGame(GAMES.find(g=>g.id===t.dataset.g)));
+  app.querySelectorAll('.units button').forEach(b=>b.onclick=()=>{store.set('unit',+b.dataset.u);renderHub()});
 }
 
 function openGame(g){
@@ -658,6 +695,368 @@ function runPuzzle(stage,api){
     P[i](stage.querySelector('.pz'),ok=>{if(sent)return;sent=true;if(ok)score++;nextBtn(stage.querySelector('#pn'),()=>{i++;i<P.length?show():api.finish(score,P.length,{line:`You solved <b>${score}</b> of ${P.length} puzzles on the first try.`})},i===P.length-1)})};
   show();
 }
+
+
+/* ===================== UNIT 2 · 2D shape and pattern ===================== */
+const PAINT={K:'#202020',W:'#FFFFFF',G:'#7B7B7B',L:'#CFCFCF',T:'#27B8CE',Y:'#F7A928',N:'#6DBE45',P:'#5B2C91',O:'#F26B21',R:'#E8262B'};
+const PNAME={K:'Black',W:'White',G:'Dark grey',L:'Light grey',T:'Light blue',Y:'Yellow',N:'Green',P:'Purple',O:'Orange',R:'Red'};
+const DARK=new Set(['K','G','P','R','O']);
+
+function runSeq(stage,api,P,word){
+  word=word||'Question';let i=0,score=0;
+  const show=()=>{api.progress(i,P.length,`${word} ${i+1} of ${P.length}`);
+    stage.innerHTML='<div class="card"><div class="pz"></div><div class="actions" id="pn"></div></div>';let sent=false;
+    P[i](stage.querySelector('.pz'),ok=>{if(sent)return;sent=true;if(ok)score++;
+      nextBtn(stage.querySelector('#pn'),()=>{i++;i<P.length?show():api.finish(score,P.length,{line:`You got <b>${score}</b> of ${P.length} right on the first try.`})},i===P.length-1)})};
+  show();
+}
+const mcStep=it=>(el,done)=>{
+  el.innerHTML=`${it.eb?`<p class="eyebrow">${it.eb}</p>`:''}<div class="prompt">${it.prompt}</div>${it.extra||''}
+    <div class="opts">${it.options.map((o,k)=>`<button class="opt" type="button" data-k="${k}"><span class="let">${LET[k]}</span><span class="otext">${o}</span></button>`).join('')}</div><div class="fb sfb"></div>`;
+  if(it.bind)it.bind(el);
+  const fb=el.querySelector('.sfb');
+  bindChoices([...el.querySelectorAll('.opt')],b=>it.options[+b.dataset.k]===it.answer,fb,first=>{feedback(fb,true,it.explain||'');if(it.after)it.after(el);done(first)},it.hint);
+};
+
+/* ---- triangle helpers ---- */
+const d2=(a,b)=>(a[0]-b[0])**2+(a[1]-b[1])**2;
+function rot(p,deg){const a=deg*Math.PI/180,cx=p.reduce((s,v)=>s+v[0],0)/p.length,cy=p.reduce((s,v)=>s+v[1],0)/p.length;
+  return p.map(([x,y])=>[cx+(x-cx)*Math.cos(a)-(y-cy)*Math.sin(a),cy+(x-cx)*Math.sin(a)+(y-cy)*Math.cos(a)])}
+const EQ=s=>[[0,s*0.866],[s,s*0.866],[s/2,0]];
+const ISO=(b,h)=>[[0,h],[b,h],[b/2,0]];
+function triInfo(p,tol){tol=tol==null?0.01:tol;const s=[d2(p[1],p[2]),d2(p[0],p[2]),d2(p[0],p[1])];const m=Math.max(...s);const eq=(a,b)=>Math.abs(a-b)<=tol*m;
+  const n=(eq(s[0],s[1])?1:0)+(eq(s[0],s[2])?1:0)+(eq(s[1],s[2])?1:0);
+  const dots=p.map((v,i)=>{const a=p[(i+1)%3],b=p[(i+2)%3];return (a[0]-v[0])*(b[0]-v[0])+(a[1]-v[1])*(b[1]-v[1])});
+  const area=Math.abs((p[1][0]-p[0][0])*(p[2][1]-p[0][1])-(p[2][0]-p[0][0])*(p[1][1]-p[0][1]))/2;
+  const ss=s.slice().sort((a,b)=>a-b);
+  return {type:n===3?'equilateral':n>=1?'isosceles':'scalene',right:dots.some(x=>Math.abs(x)<=tol*m),obtuse:dots.some(x=>x<-tol*m),area,
+    isoLong:eq(ss[0],ss[1])&&!eq(ss[1],ss[2])};
+}
+function symLines(p){const out=[];p.forEach((v,i)=>{const a=p[(i+1)%3],b=p[(i+2)%3];if(Math.abs(d2(v,a)-d2(v,b))<0.01*Math.max(d2(v,a),d2(v,b))){
+  const m=[(a[0]+b[0])/2,(a[1]+b[1])/2],dx=m[0]-v[0],dy=m[1]-v[1];out.push([[v[0]-dx*.18,v[1]-dy*.18],[m[0]+dx*.18,m[1]+dy*.18]])}});return out}
+function triSVG(p,col,o){o=o||{};const S=30,xs=p.map(v=>v[0]),ys=p.map(v=>v[1]),pad=o.measure?1.3:(o.lines?0.9:0.35);
+  const minx=Math.min(...xs)-pad,miny=Math.min(...ys)-pad,W=Math.max(...xs)-minx+pad,H=Math.max(...ys)-miny+pad;
+  const X=v=>((v[0]-minx)*S).toFixed(1),Y=v=>((v[1]-miny)*S).toFixed(1);
+  let g=`<svg class="diagram tri" viewBox="0 0 ${(W*S).toFixed(0)} ${(H*S).toFixed(0)}" style="max-width:${o.w||230}px;max-height:${o.h||200}px">`;
+  g+=`<polygon points="${p.map(v=>X(v)+','+Y(v)).join(' ')}" fill="${col}" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>`;
+  if(o.lines)symLines(p).forEach(([a,b])=>g+=`<line class="symline" x1="${X(a)}" y1="${Y(a)}" x2="${X(b)}" y2="${Y(b)}"/>`);
+  if(o.measure){const cx=xs.reduce((a,b)=>a+b)/3,cy=ys.reduce((a,b)=>a+b)/3;
+    p.forEach((v,i)=>{const w=p[(i+1)%3],m=[(v[0]+w[0])/2,(v[1]+w[1])/2];let dx=m[0]-cx,dy=m[1]-cy;const L=Math.hypot(dx,dy)||1;dx/=L;dy/=L;
+      const t=[m[0]+dx*.62,m[1]+dy*.62];g+=`<text x="${X(t)}" y="${(+Y(t)+5).toFixed(1)}" text-anchor="middle" font-size="15">${Math.sqrt(d2(v,w)).toFixed(1)} cm</text>`})}
+  return g+'</svg>';
+}
+const TYPE_OPTS=['Equilateral','Isosceles','Scalene'];
+const TYPE_EX={equilateral:'All three sides are the same length, so it is equilateral.',isosceles:'Two of the sides are the same length, so it is isosceles.',scalene:'All three sides are different lengths, so it is scalene.'};
+const cap=s=>s[0].toUpperCase()+s.slice(1);
+function measureBlock(p,col){return {extra:`<div class="tribox"></div><div class="tools"><button type="button" class="ms">Measure the sides</button></div>`,
+  bind(el){let on=false;const box=el.querySelector('.tribox'),b=el.querySelector('.ms');const draw=()=>{box.innerHTML=triSVG(p,col,{measure:on,w:300,h:230});b.textContent=on?'Hide the measurements':'Measure the sides';b.classList.toggle('on',on)};draw();b.onclick=()=>{on=!on;draw()}}}}
+function typeStep(p,col,eb,prompt){const t=triInfo(p).type;return mcStep(Object.assign({eb,prompt:prompt||'Is this an equilateral, isosceles or scalene triangle?',options:TYPE_OPTS,answer:cap(t),explain:TYPE_EX[t],hint:'Measure the sides to help you.'},measureBlock(p,col)))}
+
+const multiStep=it=>(el,done)=>{let measure=false,solved=false;const sel=new Set();
+  el.innerHTML=`${it.eb?`<p class="eyebrow">${it.eb}</p>`:''}<div class="prompt">${it.prompt}</div><p class="hint">Tap every one you choose, then press Check.</p>
+    ${it.measure?`<div class="tools"><button type="button" class="ms">Measure the sides</button></div>`:''}<div class="tcards"></div>`;
+  const draw=()=>{const box=el.querySelector('.tcards');box.innerHTML=it.cards.map(c=>`<button type="button" class="tcard ${sel.has(c.l)?'pick':''}" data-l="${c.l}"><span class="tl">${c.l}</span>${c.svg(measure)}</button>`).join('');
+    box.querySelectorAll('.tcard').forEach(b=>b.onclick=()=>{if(solved)return;const l=b.dataset.l;sel.has(l)?sel.delete(l):sel.add(l);b.classList.toggle('pick')})};
+  draw();
+  if(it.measure){const b=el.querySelector('.ms');b.onclick=()=>{measure=!measure;b.textContent=measure?'Hide the measurements':'Measure the sides';b.classList.toggle('on',measure);draw()}}
+  checker(el,'Check',()=>{if(!sel.size)return{incomplete:1,msg:'Tap the ones you choose first.'};
+    const ok=sel.size===it.ans.length&&it.ans.every(a=>sel.has(a));return ok?{ok:1,msg:it.explain}:{ok:0,msg:it.hint||''}},first=>{solved=true;done(first)});
+};
+
+/* ---- grid helpers ---- */
+function symList(g){const n=g.length,all=f=>g.every((row,r)=>row.every((k,c)=>k===f(r,c)));const L=[];
+  if(all((r,c)=>g[r][n-1-c]))L.push('v');if(all((r,c)=>g[n-1-r][c]))L.push('h');if(all((r,c)=>g[c][r]))L.push('d1');if(all((r,c)=>g[n-1-c][n-1-r]))L.push('d2');return L}
+function gridSVG(g,o){o=o||{};const n=g.length,S=o.S||44,W=n*S;let s=`<svg class="diagram gsvg" viewBox="-6 -6 ${W+12} ${W+12}" style="max-width:${o.w||280}px">`;
+  g.forEach((row,r)=>row.forEach((k,c)=>{s+=`<rect ${o.click?`data-cell="${r},${c}" style="cursor:pointer"`:''} x="${c*S}" y="${r*S}" width="${S}" height="${S}" fill="${k?PAINT[k]:'var(--surface)'}" stroke="var(--ink)" stroke-width="1.5"/>`;
+    const lab=o.labels&&o.labels[r+','+c];if(lab)s+=`<text x="${c*S+S/2}" y="${r*S+S/2+7}" text-anchor="middle" font-size="22" pointer-events="none" style="fill:${k&&DARK.has(k)?'#fff':'var(--ink)'}">${lab}</text>`}));
+  const LN={v:[W/2,-6,W/2,W+6],h:[-6,W/2,W+6,W/2],d1:[-6,-6,W+6,W+6],d2:[W+6,-6,-6,W+6]};
+  (o.lines||[]).forEach(l=>{const a=LN[l];s+=`<line class="symline" x1="${a[0]}" y1="${a[1]}" x2="${a[2]}" y2="${a[3]}"/>`});
+  return s+'</svg>';
+}
+function mirrorTools(el,render){const on=new Set();const box=document.createElement('div');box.className='tools';
+  box.innerHTML='<span class="hint" style="flex-basis:100%;text-align:center">Try a mirror line:</span>'+[['v','Vertical'],['h','Horizontal'],['d1','Diagonal ↘'],['d2','Diagonal ↙']].map(([k,t])=>`<button type="button" data-l="${k}">${t}</button>`).join('');
+  box.querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=b.dataset.l;on.has(k)?on.delete(k):on.add(k);b.classList.toggle('on');render([...on])});
+  return box;
+}
+
+/* ---- Game: Shape warm-up (Getting started) ---- */
+function runWarm(stage,api){
+  const sh=(inner)=>`<svg viewBox="0 0 100 100" class="diagram" style="max-height:96px">${inner}</svg>`;
+  const pent=[0,1,2,3,4].map(k=>{const a=-Math.PI/2+k*2*Math.PI/5;return (50+40*Math.cos(a)).toFixed(1)+','+(54+40*Math.sin(a)).toFixed(1)}).join(' ');
+  const cards=[
+    {l:'A',svg:()=>sh(`<polygon points="${pent}" fill="var(--c2)" stroke="var(--ink)" stroke-width="2"/>`)},
+    {l:'B',svg:()=>sh(`<path d="M25,22 v58 a25,9 0 0 0 50,0 v-58" fill="var(--c8)" stroke="var(--ink)" stroke-width="2"/><ellipse cx="50" cy="22" rx="25" ry="9" fill="var(--c5)" stroke="var(--ink)" stroke-width="2"/>`)},
+    {l:'C',svg:()=>sh(`<path d="M10,72 A40,40 0 0 1 90,72 Z" fill="var(--c7)" stroke="var(--ink)" stroke-width="2"/>`)},
+    {l:'D',svg:()=>sh(`<polygon points="12,58 44,28 54,40 82,22 72,54 88,66 48,86" fill="var(--c6)" stroke="var(--ink)" stroke-width="2"/>`)},
+    {l:'E',svg:()=>sh(`<rect x="27" y="10" width="46" height="80" fill="var(--c5)" stroke="var(--ink)" stroke-width="2"/>`)}];
+  const sq=l=>`<svg class="diagram" viewBox="-14 -14 148 148" style="max-width:190px"><rect x="0" y="0" width="120" height="120" fill="var(--c1)" stroke="var(--ink)" stroke-width="2"/>${l?'<line class="symline" x1="60" y1="-12" x2="60" y2="132"/><line class="symline" x1="-12" y1="60" x2="132" y2="60"/><line class="symline" x1="-10" y1="-10" x2="130" y2="130"/><line class="symline" x1="130" y1="-10" x2="-10" y2="130"/>':''}</svg>`;
+  let bricks='';for(let r=0;r<4;r++)for(let i=-1;i<6;i++){const x=i*60+(r%2?30:0);bricks+=`<rect x="${x}" y="${r*30}" width="60" height="30" fill="var(${COLS[(r*3+i+8)%8]})" fill-opacity=".85" stroke="var(--ink)" stroke-width="1.5"/>`}
+  runSeq(stage,api,[
+    multiStep({eb:'Getting started · Question 1',prompt:'Which of these shapes are polygons?',cards,ans:['A','D','E'],explain:'A, D and E are polygons. A polygon is a flat shape with straight sides only. B is a 3D shape and C has a curved side.',hint:'A polygon is flat and all its sides are straight.'}),
+    mcStep({eb:'Getting started · Question 2',prompt:'How many right angles does this shape have?',extra:`<svg class="diagram" viewBox="0 0 100 100" style="max-width:170px"><polygon points="22,92 22,46 50,14 78,46 78,92" fill="var(--c3)" stroke="var(--ink)" stroke-width="2"/></svg>`,options:['1','2','3','5'],answer:'2',explain:'The two corners at the bottom are right angles.',hint:'A right angle looks like the corner of a square.'}),
+    mcStep({eb:'Getting started · Question 4',prompt:'How many lines of symmetry does a square have?',extra:`<div class="sqbox">${sq(false)}</div>`,options:['1','2','3','4'],answer:'4',explain:'A square has 4 lines of symmetry: 1 vertical, 1 horizontal and 2 diagonals.',after(el){el.querySelector('.sqbox').innerHTML=sq(true)}}),
+    mcStep({eb:'Getting started · Question 3',prompt:'Look at this pattern of rectangles. Is it a tessellating pattern?',extra:`<svg class="diagram" viewBox="0 0 300 120" style="max-width:340px"><defs><clipPath id="brk"><rect width="300" height="120" rx="6"/></clipPath></defs><g clip-path="url(#brk)">${bricks}</g></svg>`,
+      options:['Yes. The rectangles fit together with no gaps and no overlaps.','No. There are gaps between the rectangles.','No. Only triangles can tessellate.'],answer:'Yes. The rectangles fit together with no gaps and no overlaps.',explain:'A tessellation covers a surface with no gaps and no overlaps. Rectangles tessellate.'}),
+  ]);
+}
+
+/* ---- Game: Triangle sorter (2.1) ---- */
+function runTriSort(stage,api){
+  const C=k=>`var(--c${k})`;
+  const Q2=[[EQ(3.6),C(5)],[ISO(2.4,4.2),C(4)],[rot(ISO(3.4,3.2),192),C(3)],[rot([[0,0],[0,3],[5,3]],-20),C(6)],[[[0,2.8],[5.2,2.8],[1.4,0]],C(2)]];
+  const q1=[['A',EQ(3),C(2)],['B',[[0,0],[0,2.4],[4.6,2.4]],'var(--accent)'],['C',rot(ISO(1.8,3.4),180),C(6)],['D',rot([[0,0],[4.4,0.6],[0.8,2.4]],8),C(3)],['E',[[0,2.2],[2.8,2.2],[5,0]],C(5)]];
+  const cp2=[['A',EQ(2),C(2)],['B',[[0,0],[0,2.6],[2.6,2.6]],C(5)],['C',[[0,0],[3.4,0.3],[2.4,1.0]],C(3)],['D',rot(ISO(4,4.14),90),'var(--accent)'],['E',rot(EQ(3.4),25),C(6)]];
+  const q4=[['A',EQ(2.6),'var(--accent)'],['B',ISO(5,1.3),C(3)],['C',rot([[0,2.4],[2.4,2.4],[0,0]],20),C(6)],['D',[[0,2.6],[3.6,2.6],[2.2,0]],C(5)]];
+  const cardsOf=list=>list.map(([l,p,c])=>({l,svg:m=>triSVG(p,c,{measure:m,w:170,h:130})}));
+  const scal=q1.filter(x=>triInfo(x[1]).type==='scalene').map(x=>x[0]),eqs=cp2.filter(x=>triInfo(x[1]).type==='equilateral').map(x=>x[0]),obt=q4.filter(x=>triInfo(x[1]).obtuse).map(x=>x[0]);
+  runSeq(stage,api,[
+    typeStep(rot([[0,0],[2.2,2.6],[5,2.9]],0),C(3),'Worked example 1'),
+    ...Q2.map((t,k)=>typeStep(t[0],t[1],`Exercise 2.1 · Question 2${'abcde'[k]}`,'Name this type of triangle.')),
+    multiStep({eb:'Exercise 2.1 · Question 1',prompt:'Which of these triangles are scalene?',cards:cardsOf(q1),ans:scal,measure:true,explain:`${scal.join(', ')} are scalene: none of their sides are the same length.`,hint:'Measure the sides. A scalene triangle has no equal sides.'}),
+    multiStep({eb:'Check your progress · Question 2',prompt:'Which of these triangles are equilateral?',cards:cardsOf(cp2),ans:eqs,measure:true,explain:`${eqs.join(' and ')} are equilateral: all three sides are the same length.`,hint:'Measure carefully. Some triangles look equilateral but are not.'}),
+    mcStep({eb:'Exercise 2.1 · Question 4',prompt:'Which of these triangles has an obtuse angle?',extra:`<div class="tcards static">${cardsOf(q4).map(c=>`<div class="tcard"><span class="tl">${c.l}</span>${c.svg(false)}</div>`).join('')}</div>`,options:['A','B','C','D'],answer:obt[0],explain:`Triangle ${obt[0]} has an obtuse angle. It is bigger than a right angle.`,hint:'An obtuse angle is bigger than a right angle.'}),
+    mcStep({eb:'Think like a mathematician · a',prompt:'What type of triangle can have a right angle?',options:['Only an equilateral triangle','An isosceles triangle or a scalene triangle','No triangle can have a right angle'],answer:'An isosceles triangle or a scalene triangle',explain:'A right-angled triangle can be isosceles or scalene. An equilateral triangle cannot, because its angles are all the same size and none of them is a right angle.'}),
+    mcStep({eb:'Think like a mathematician · b',prompt:'What type of triangle can have two right angles?',options:['An isosceles triangle','A scalene triangle','None. It is impossible.'],answer:'None. It is impossible.',explain:'With two right angles, the two sides go straight up next to each other and never meet, so the shape cannot close.'}),
+    mcStep({eb:'Think like a mathematician · c',prompt:'What type of triangle can have three right angles?',options:['An equilateral triangle','None. It is impossible.','An isosceles triangle'],answer:'None. It is impossible.',explain:'A triangle cannot even have two right angles, so three right angles is impossible too.'}),
+    mcStep({eb:'Think like a mathematician · d',prompt:'How many obtuse angles can a triangle have?',options:['0 or 1','2','3'],answer:'0 or 1',explain:'A triangle can have at most one obtuse angle. The other angles are always acute.'}),
+    mcStep({eb:'Think like a mathematician · d',prompt:'What angles does an equilateral triangle have?',options:['3 acute angles','1 right angle and 2 acute angles','1 obtuse angle and 2 acute angles'],answer:'3 acute angles',explain:'All three angles of an equilateral triangle are the same size, and they are all acute.'}),
+  ]);
+}
+
+/* ---- Game: Triangle builder (2.1 Q3, Check your progress Q1) ---- */
+function runBuilder(stage,api){
+  const tasks=[
+    {k:'iso',t:'Make an isosceles triangle.',src:'Exercise 2.1 · Question 3a',start:[[1,4],[2,1],[5,3]]},
+    {k:'sca',t:'Make a scalene triangle.',src:'Exercise 2.1 · Question 3b',start:[[1,4],[3,1],[5,4]]},
+    {k:'right',t:'Make a triangle with a right angle.',src:'Think like a mathematician',start:[[1,4],[2,1],[5,3]]},
+    {k:'isoLong',t:'Make an isosceles triangle with one side that is longer than the other two sides.',src:'Check your progress · Question 1',start:[[1,4],[2,1],[5,3]]},
+    {k:'obt',t:'Make a triangle with an obtuse angle.',src:'Exercise 2.1 · Question 4',start:[[1,4],[2,1],[5,3]]},
+    {k:'eq',t:'Now make an equilateral triangle. Use the triangle-dot grid.',src:'Most people find an equilateral triangle hard to draw. Why?',iso:true,start:[[1,1],[3,1],[4,4]]},
+  ];
+  const steps=tasks.map(tk=>(el,done)=>{
+    const iso=!!tk.iso,S=46,cols=7,rows=6,h=Math.sqrt(3)/2;
+    const pos=(c,r)=>iso?[c+(r%2?0.5:0),r*h]:[c,r];
+    const V=tk.start.map(v=>v.slice());let sel=0,drag=null,locked=false;
+    const vw=(cols-1+(iso?0.5:0)+1.2)*S,vh=((rows-1)*(iso?h:1)+1.2)*S;
+    el.innerHTML=`<p class="eyebrow">${tk.src}</p><h3>${tk.t}</h3><p class="hint">Drag the coloured corners onto the dots. You can also tap a corner and then tap a dot.</p>
+      <svg class="diagram builder" viewBox="${-0.6*S} ${-0.6*S} ${vw} ${vh}" style="max-width:400px;touch-action:none"></svg>`;
+    const svg=el.querySelector('svg'),ns='http://www.w3.org/2000/svg',mk=(t,a)=>{const e=document.createElementNS(ns,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+    const dots=[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const[x,y]=pos(c,r);const d=mk('circle',{cx:x*S,cy:y*S,r:5,class:'bdot'});d.dataset.c=c;d.dataset.r=r;svg.appendChild(d);dots.push(d)}
+    const hit=[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const[x,y]=pos(c,r);const d=mk('circle',{cx:x*S,cy:y*S,r:18,fill:'transparent'});d.style.cursor='pointer';
+      d.addEventListener('click',()=>{if(locked)return;if(!V.some((v,k)=>k!==sel&&v[0]===c&&v[1]===r)){V[sel]=[c,r];draw()}});svg.appendChild(d);hit.push(d)}
+    const poly=mk('polygon',{class:'bpoly'});svg.appendChild(poly);
+    const vx=[0,1,2].map(k=>{const e=mk('circle',{r:14,class:'vx'});e.style.fill=`var(${['--c1','--c2','--c5'][k]})`;svg.appendChild(e);
+      e.addEventListener('pointerdown',ev=>{if(locked)return;ev.preventDefault();sel=k;drag=k;try{e.setPointerCapture(ev.pointerId)}catch(_){}draw()});
+      e.addEventListener('pointermove',ev=>{if(drag!==k)return;const pt=svg.createSVGPoint();pt.x=ev.clientX;pt.y=ev.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());
+        let best=null,bd=1e9;for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const[x,y]=pos(c,r);const dd=(x*S-q.x)**2+(y*S-q.y)**2;if(dd<bd){bd=dd;best=[c,r]}}
+        if(best&&!V.some((v,j)=>j!==k&&v[0]===best[0]&&v[1]===best[1])){V[k]=best;draw()}});
+      const end=()=>{drag=null};e.addEventListener('pointerup',end);e.addEventListener('pointercancel',end);return e});
+    function draw(){const P=V.map(v=>pos(v[0],v[1]));poly.setAttribute('points',P.map(p=>p[0]*S+','+p[1]*S).join(' '));
+      vx.forEach((e,k)=>{e.setAttribute('cx',P[k][0]*S);e.setAttribute('cy',P[k][1]*S);e.classList.toggle('sel',k===sel)})}
+    draw();
+    checker(el,'Check my triangle',()=>{const P=V.map(v=>pos(v[0],v[1]));const t=triInfo(P,1e-6);
+      if(t.area<1e-6)return{incomplete:1,msg:'The three corners are in a straight line. Move one corner.'};
+      const desc=`Your triangle is ${t.type}${t.right?' with a right angle':t.obtuse?' with an obtuse angle':''}.`;
+      const ok={iso:t.type==='isosceles',sca:t.type==='scalene',right:t.right,isoLong:t.type==='isosceles'&&t.isoLong,obt:t.obtuse,eq:t.type==='equilateral'}[tk.k];
+      if(ok)return{ok:1,msg:tk.k==='eq'?'That is an equilateral triangle. On squared paper the dots are not the same distance apart in every direction, so an equilateral triangle is very hard to draw. Triangle dots make it easy.':desc};
+      return{ok:0,msg:desc}},first=>{locked=true;done(first)});
+  });
+  runSeq(stage,api,steps,'Triangle');
+}
+
+/* ---- Game: Tessellation spotter (2.1 Q5, Q6, Check your progress Q3) ---- */
+function tessSVG(kind){const W=300,H=180;let k=0,s=`<svg class="diagram" viewBox="0 0 ${W} ${H}" style="max-width:360px"><defs><clipPath id="cp-${kind}"><rect width="${W}" height="${H}" rx="8"/></clipPath></defs><g clip-path="url(#cp-${kind})">`;
+  const cl=['--c2','--c5','--c3','--c6','--c4','--c1','--c7'];
+  const poly=pts=>{s+=`<polygon points="${pts.map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' ')}" fill="var(${cl[(k++)%cl.length]})" fill-opacity=".85" stroke="var(--ink)" stroke-width="1.5"/>`};
+  if(kind==='eq'){const a=50,h=43.3;for(let r=0;r<5;r++)for(let i=-1;i<7;i++){const x=i*a+(r%2?a/2:0),y=r*h;poly([[x,y+h],[x+a,y+h],[x+a/2,y]]);poly([[x+a/2,y],[x+a*1.5,y],[x+a,y+h]])}}
+  if(kind==='rt'){for(let r=0;r<4;r++)for(let i=0;i<6;i++){const x=i*50,y=r*50;poly([[x,y],[x+50,y],[x,y+50]]);poly([[x+50,y],[x+50,y+50],[x,y+50]])}}
+  if(kind==='sca'){for(let r=0;r<4;r++)for(let i=-1;i<5;i++){const x=i*75+(r%2?30:0),y=r*48;poly([[x,y],[x+75,y],[x+30,y+48]]);poly([[x+75,y],[x+105,y+48],[x+30,y+48]])}}
+  if(kind==='tall'){for(let r=0;r<3;r++)for(let i=-1;i<8;i++){const x=i*40,y=r*70;poly([[x,y+70],[x+40,y+70],[x+20,y]]);poly([[x+20,y],[x+60,y],[x+40,y+70]])}}
+  if(kind==='circ'){for(let r=0;r<4;r++)for(let i=0;i<7;i++)s+=`<circle cx="${i*46+23}" cy="${r*46+23}" r="22" fill="var(${cl[(r+i)%cl.length]})" fill-opacity=".85" stroke="var(--ink)" stroke-width="1.5"/>`}
+  return s+'</g></svg>'}
+function runTess(stage,api){
+  const name=(kind,ans,ex,q)=>mcStep({eb:`Exercise 2.1 · Question 5${q}`,prompt:'Name the smallest triangle that has been tessellated in this pattern.',extra:tessSVG(kind),options:TYPE_OPTS,answer:ans,explain:ex,hint:'Look at one small triangle. Compare its sides.'});
+  runSeq(stage,api,[
+    name('eq','Equilateral','Each small triangle has three equal sides, so it is an equilateral triangle.','a'),
+    name('tall','Isosceles','Each tall triangle has two equal sides, so it is an isosceles triangle.','b'),
+    name('sca','Scalene','Each triangle has three different side lengths, so it is a scalene triangle.','c'),
+    name('rt','Isosceles','Each square is cut in half along a diagonal. Each half is an isosceles triangle with a right angle.',''),
+    mcStep({eb:'Tessellation',prompt:'Look at these circles. Do circles tessellate?',extra:tessSVG('circ'),options:['Yes, they fit together perfectly.','No. There are gaps between the circles.'],answer:'No. There are gaps between the circles.',explain:'A tessellation has no gaps and no overlaps. Circles always leave gaps.'}),
+    mcStep({eb:'Exercise 2.1 · Question 6',prompt:'Is it possible to draw a triangle that cannot be tessellated?',options:['Yes, some triangles cannot be tessellated.','No. Every triangle can be tessellated.'],answer:'No. Every triangle can be tessellated.',explain:'Two copies of any triangle fit together to make a four-sided shape (a parallelogram), and those shapes fit together in rows with no gaps.'}),
+    mcStep({eb:'Check your progress · Question 3',prompt:'Which types of triangle can be used to make a tessellating pattern?',options:['Only equilateral triangles','Only equilateral and isosceles triangles','All types: equilateral, isosceles and scalene'],answer:'All types: equilateral, isosceles and scalene',explain:'Every type of triangle tessellates.'}),
+  ]);
+}
+
+/* ---- Game: Mirror lines (2.2 Q1, Check your progress Q4, Worked example 2) ---- */
+function runLines(stage,api){
+  const C=k=>`var(--c${k})`;
+  const tris=[[rot(ISO(2.6,3.6),200),'var(--accent)'],[[[0,3],[5.5,0],[1.6,2.0]],C(5)],[ISO(4.6,2.6),C(3)],[rot(ISO(2.8,3.2),90),C(6)],[[[0,2.4],[4.2,2.4],[3.2,0]],C(2)],[rot(EQ(3.2),180),C(4)]];
+  const triQ=(p,col,eb,prompt)=>{const n=symLines(p).length;return mcStep({eb,prompt:prompt||'How many lines of symmetry does this triangle have?',extra:`<div class="tribox">${triSVG(p,col,{w:260,h:220,lines:false})}</div>`,
+    options:['0','1','2','3'],answer:String(n),explain:n===0?'This triangle is scalene. It has no lines of symmetry.':n===1?'This triangle is isosceles. It has 1 line of symmetry.':'This triangle is equilateral. It has 3 lines of symmetry.',hint:'Imagine folding the triangle so that one half fits exactly on the other.',
+    after(el){el.querySelector('.tribox').innerHTML=triSVG(p,col,{w:260,h:220,lines:true})}})};
+  const grids=[
+    [['T','Y','T','N'],['P','N','P','O'],['T','R','O','Y'],['Y','R','N','T']],
+    [['R','Y','Y','R'],['N','T','T','N'],['P','P','P','P'],['O','N','N','O']],
+    [['T','R','R','T'],['Y','N','N','Y'],['Y','N','N','Y'],['T','R','R','T']],
+    [['O','Y','Y','O'],['Y','P','P','Y'],['Y','P','P','Y'],['O','Y','Y','O']]];
+  const gridQ=(g,eb)=>{const L=symList(g),n=L.length;let lines=[];return mcStep({eb,prompt:'How many lines of symmetry does this pattern have? Use the mirror lines to check, like a small mirror.',extra:'<div class="gbox"></div>',
+    options:['0','1','2','3','4'],answer:String(n),explain:n===0?'Every mirror line gives different colours on each side, so the pattern has 0 lines of symmetry.':`The pattern has ${n} line${n>1?'s':''} of symmetry.`,hint:'Check each mirror line. Do the colours match on both sides?',
+    bind(el){const box=el.querySelector('.gbox');const r=ls=>{lines=ls;box.innerHTML=gridSVG(g,{lines:ls})};r([]);box.after(mirrorTools(el,r))},
+    after(el){el.querySelector('.gbox').innerHTML=gridSVG(g,{lines:L});const t=el.querySelector('.tools');if(t)t.remove()}})};
+  runSeq(stage,api,[
+    ...tris.map((t,k)=>triQ(t[0],t[1],`Exercise 2.2 · Question 1${'abcdef'[k]}`)),
+    triQ(EQ(3.4),C(1),'Check your progress · Question 4','How many lines of symmetry does an equilateral triangle have?'),
+    gridQ(grids[0],'Worked example 2'),gridQ(grids[1],'Symmetry in patterns'),gridQ(grids[2],'Symmetry in patterns'),gridQ(grids[3],'Symmetry in patterns'),
+  ]);
+}
+
+/* ---- Game: The star square (2.2 Q3) ---- */
+function runStar(stage,api){
+  const base=[['K','W','K','W','G'],['W','L','G','L','W'],['K','G','G','G','K'],['W','L','G','L','W'],['G','W','K','W',null]];
+  const parts=[{q:'a',t:'exactly <b>one</b> line of symmetry',ok:c=>c&&c!=='K'&&c!=='none',good:'Now the pattern has exactly 1 line of symmetry: the diagonal from the top-left corner to the bottom-right corner.'},
+    {q:'b',t:'exactly <b>two</b> lines of symmetry',ok:c=>c==='K',good:'Black makes the pattern match across both diagonals, so it has exactly 2 lines of symmetry.'},
+    {q:'c',t:'<b>more than two</b> lines of symmetry',ok:c=>c==='none',good:'It is not possible. The top-left corner is black and the top-right corner is grey, so a vertical or horizontal mirror line can never work.'}];
+  const steps=parts.map(pt=>(el,done)=>{let choice=null,lines=[];
+    el.innerHTML=`<p class="eyebrow">Exercise 2.2 · Question 3${pt.q}</p><div class="prompt">What colour can you colour the square at <b>*</b> to make a pattern with ${pt.t}?</div><div class="gbox"></div>
+      <div class="palette">${['K','G','L','W'].map(k=>`<button type="button" class="sw" data-c="${k}" style="background:${PAINT[k]}" aria-label="${PNAME[k]}" title="${PNAME[k]}"></button>`).join('')}<button type="button" class="sw sw-txt" data-c="none">It is not possible</button></div>`;
+    const box=el.querySelector('.gbox');
+    const render=()=>{const g=base.map(r=>r.slice());if(choice&&choice!=='none')g[4][4]=choice;box.innerHTML=gridSVG(g,{labels:choice&&choice!=='none'?{}:{'4,4':'*'},lines,w:260})};
+    render();box.after(mirrorTools(el,ls=>{lines=ls;render()}));
+    el.querySelectorAll('.sw').forEach(b=>b.onclick=()=>{choice=b.dataset.c;el.querySelectorAll('.sw').forEach(x=>x.classList.toggle('on',x===b));render()});
+    checker(el,'Check',()=>{if(!choice)return{incomplete:1,msg:'Choose a colour for the * square first.'};return pt.ok(choice)?{ok:1,msg:pt.good}:{ok:0,msg:'Use the mirror lines to count the lines of symmetry.'}},first=>{el.querySelectorAll('.sw').forEach(x=>x.disabled=true);done(first)});
+  });
+  runSeq(stage,api,steps,'Part');
+}
+
+/* ---- Game: Mirror painter (2.2 Q4) ---- */
+function runPainter(stage,api){
+  const TL=[['T','Y','T','N'],['P','N','P','O'],['T','R','O','Y'],['Y','R','N','T']];
+  const want=(r,c)=>TL[r<4?r:7-r][c<4?c:7-c];
+  const LAB={'1,4':'A','7,0':'B','3,6':'C','6,2':'D','4,4':'E','4,6':'F','6,6':'G'};
+  const g=[...Array(8)].map((_,r)=>[...Array(8)].map((_,c)=>r<4&&c<4?TL[r][c]:null));
+  let brush='T',phase=1,score=0,first1=true,first2=true,okLetters=new Set();
+  api.progress(0,2,'Part 1 of 2');
+  stage.innerHTML=`<div class="card"><p class="eyebrow">Exercise 2.2 · Question 4</p><div class="prompt" id="pp"></div>
+    <div class="palette">${['T','Y','N','P','O','R'].map(k=>`<button type="button" class="sw" data-c="${k}" style="background:${PAINT[k]}" aria-label="${PNAME[k]}" title="${PNAME[k]}"></button>`).join('')}<button type="button" class="sw sw-txt" data-c="">Rubber</button></div>
+    <div class="p8" id="p8"></div><div class="fb" id="pfb"></div><div class="actions" id="pact"><button class="btn primary" type="button" id="pchk">Check</button></div></div>`;
+  const pp=stage.querySelector('#pp'),grid=stage.querySelector('#p8'),fb=stage.querySelector('#pfb');
+  const setPrompt=()=>{pp.innerHTML=phase===1?'If the pattern is reflected in the two red mirror lines, what colour will the squares <b>A, B, C, D, E, F</b> and <b>G</b> be? Pick a colour, then tap a square.':'Now colour <b>all the other squares</b> so the pattern is reflected in both mirror lines.'};
+  const draw=()=>{grid.innerHTML='';for(let r=0;r<8;r++)for(let c=0;c<8;c++){const b=document.createElement('button');b.type='button';const k=g[r][c];
+    b.className=(c===3?'mv ':'')+(r===3?'mh ':'');if(k){b.style.background=PAINT[k];if(DARK.has(k))b.style.color='#fff'}
+    b.textContent=LAB[r+','+c]||'';b.setAttribute('aria-label',`Row ${r+1}, column ${c+1}${LAB[r+','+c]?', square '+LAB[r+','+c]:''}`);
+    if(r<4&&c<4)b.disabled=true;else b.onclick=()=>{g[r][c]=brush||null;b.classList.remove('no');draw1(b,r,c)};grid.appendChild(b)}};
+  const draw1=(b,r,c)=>{const k=g[r][c];b.style.background=k?PAINT[k]:'';b.style.color=k&&DARK.has(k)?'#fff':''};
+  stage.querySelectorAll('.sw').forEach(b=>b.onclick=()=>{brush=b.dataset.c;stage.querySelectorAll('.sw').forEach(x=>x.classList.toggle('on',x===b))});
+  stage.querySelector('.sw').classList.add('on');setPrompt();draw();
+  const cells=[...Array(64).keys()].map(i=>[Math.floor(i/8),i%8]).filter(([r,c])=>!(r<4&&c<4));
+  stage.querySelector('#pchk').onclick=()=>{
+    const btns=grid.querySelectorAll('button');const mark=(r,c,bad)=>btns[r*8+c].classList.toggle('no',bad);
+    if(phase===1){const keys=Object.keys(LAB);if(keys.some(k=>{const[r,c]=k.split(',').map(Number);return !g[r][c]})){feedback(fb,false,'Colour all seven letter squares first.','info');return}
+      let wrong=0;keys.forEach(k=>{const[r,c]=k.split(',').map(Number);const ok=g[r][c]===want(r,c);mark(r,c,!ok);if(ok){if(first1&&!okLetters.has(k))score++;okLetters.add(k)}else wrong++});first1=false;
+      if(wrong){tryAgain(fb,`${wrong} letter square${wrong>1?'s are':' is'} not right yet (marked in red).`);return}
+      confetti();feedback(fb,true,'All seven letter squares are right!');phase=2;setPrompt();api.progress(1,2,'Part 2 of 2');
+    }else{let wrong=0;cells.forEach(([r,c])=>{const ok=g[r][c]===want(r,c);mark(r,c,!ok);if(!ok)wrong++});
+      if(wrong){first2=false;tryAgain(fb,`${wrong} square${wrong>1?'s are':' is'} not right yet (marked in red).`);return}
+      if(first2)score++;confetti();feedback(fb,true,'The whole pattern is reflected perfectly in both mirror lines.');
+      grid.querySelectorAll('button').forEach(b=>b.disabled=true);
+      nextBtn(stage.querySelector('#pact'),()=>api.finish(score,8,{line:`You got <b>${score}</b> of 8 right on the first try.`}),true)}
+  };
+}
+
+/* ---- Game: Reflect the shapes (2.2 Q5) ---- */
+function runReflect(stage,api){
+  const rf=(p,m)=>p.map(([x,y])=>m==='v'?[12-x,y]:[x,12-y]);
+  const D0=[[0,2],[1,1],[2,2],[1,3]],R0=[[7,1],[9,1],[9,2],[7,2]],T0=[[1,7],[4,7],[4,9]];
+  const D1=rf(D0,'v'),R1=rf(R0,'v'),T1=rf(T0,'h'),T2=rf(T1,'v'),D2=rf(D0,'h'),R2=rf(R1,'h'),D3=rf(D1,'h'),R3=rf(R0,'h'),T3=rf(T2,'h');
+  const COL={d:'var(--c2)',r:'var(--c5)',t:'var(--c3)'},NAME={d:'blue square',r:'orange rectangle',t:'green triangle'};
+  const placed=[{p:D0,k:'d'},{p:R0,k:'r'},{p:T0,k:'t'}];
+  const plan=[[D0,'d','v',D1],[R0,'r','v',R1],[T0,'t','h',T1],[T1,'t','v',T2],[D0,'d','h',D2],[R1,'r','h',R2],[D1,'d','h',D3],[R0,'r','h',R3],[T2,'t','h',T3]];
+  const S=24,cen=p=>[p.reduce((s,v)=>s+v[0],0)/p.length,p.reduce((s,v)=>s+v[1],0)/p.length];
+  const inQuad=(p,q)=>p.every(([x,y])=>x>=q[0]&&x<=q[0]+6&&y>=q[1]&&y<=q[1]+6);
+  function svg(src,m,cands){let s=`<svg class="diagram" viewBox="-8 -8 ${12*S+16} ${12*S+16}" style="max-width:400px">`;
+    for(let i=0;i<=12;i++)s+=`<line class="gridl" x1="${i*S}" y1="0" x2="${i*S}" y2="${12*S}"/><line class="gridl" x1="0" y1="${i*S}" x2="${12*S}" y2="${i*S}"/>`;
+    s+=`<line class="mirror ${m==='v'?'hot':''}" x1="${6*S}" y1="-8" x2="${6*S}" y2="${12*S+8}"/><line class="mirror ${m==='h'?'hot':''}" x1="-8" y1="${6*S}" x2="${12*S+8}" y2="${6*S}"/>`;
+    placed.forEach(o=>s+=`<polygon points="${o.p.map(v=>v[0]*S+','+v[1]*S).join(' ')}" fill="${COL[o.k]}" fill-opacity=".9" stroke="var(--ink)" stroke-width="${o.p===src?4:1.5}" ${o.p===src?'stroke-dasharray="0"':''}/>`);
+    (cands||[]).forEach((p,k)=>{const c=cen(p);s+=`<polygon points="${p.map(v=>v[0]*S+','+v[1]*S).join(' ')}" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="5 4"/><circle cx="${c[0]*S}" cy="${c[1]*S}" r="10" fill="var(--accent)"/><text x="${c[0]*S}" y="${c[1]*S+5}" text-anchor="middle" font-size="13" style="fill:#2B2100">${LET[k]}</text>`});
+    return s+'</svg>'}
+  const steps=plan.map(([src,k,m,to])=>(el,done)=>{
+    const q=[to.every(v=>v[0]>=6)?6:0,to.every(v=>v[1]>=6)?6:0];
+    const c0=cen(src),slide=src.map(([x,y])=>m==='v'?[x+(c0[0]<6?6:-6),y]:[x,y+(c0[1]<6?6:-6)]);
+    let shift=null;for(const d of [2,-2,1,-1]){const p=to.map(([x,y])=>m==='v'?[x,y+d]:[x+d,y]);if(inQuad(p,q)){shift=p;break}}
+    const cands=shuffle([to,slide,shift].filter(Boolean));const ans=LET[cands.indexOf(to)];
+    el.innerHTML=`<p class="eyebrow">Exercise 2.2 · Question 5</p><div class="prompt">Reflect the <b>${NAME[k]}</b> (thick outline) in the <b style="color:#E8262B">${m==='v'?'vertical':'horizontal'}</b> mirror line. Where will it go?</div>
+      <div class="rbox">${svg(src,m,cands)}</div>
+      <div class="opts">${cands.map((_,i)=>`<button class="opt" type="button" data-k="${i}"><span class="let">${LET[i]}</span><span class="otext">Position ${LET[i]}</span></button>`).join('')}</div><div class="fb sfb"></div>`;
+    bindChoices([...el.querySelectorAll('.opt')],b=>LET[+b.dataset.k]===ans,el.querySelector('.sfb'),first=>{placed.push({p:to,k});el.querySelector('.rbox').innerHTML=svg(null,m,[]);
+      feedback(el.querySelector('.sfb'),true,placed.length===12?'Now there are three shapes in each quarter. The pattern is complete!':'A reflection is the same distance from the mirror line, on the other side, and it is flipped over.');done(first)},'A reflection is the same distance from the mirror line and it is flipped.');
+  });
+  runSeq(stage,api,steps,'Shape');
+}
+
+/* ---- Game: Symmetry studio (2.2 Think like a mathematician) ---- */
+function runStudio(stage,api){
+  const F=[(r,c)=>[r,c],(r,c)=>[c,2-r],(r,c)=>[2-r,2-c],(r,c)=>[2-c,r],(r,c)=>[r,2-c],(r,c)=>[2-r,c],(r,c)=>[c,r],(r,c)=>[2-c,2-r]];
+  const canon=set=>F.map(f=>[...set].map(k=>{const[r,c]=k.split(',').map(Number);return f(r,c).join(',')}).sort().join('|')).sort()[0];
+  const shaded=new Set(),found=new Map();const GOAL=12;let ok1=0,tries=0;
+  const toGrid=s=>[0,1,2].map(r=>[0,1,2].map(c=>s.has(r+','+c)?'T':'W'));
+  api.progress(0,GOAL,`0 of ${GOAL} patterns found`);
+  stage.innerHTML=`<div class="card"><p class="eyebrow">Think like a mathematician · page 31</p><div class="prompt">How many patterns with at least 1 line of symmetry can you make by shading <b>4 squares</b> of this 3 × 3 grid?</div>
+    <p class="hint">Patterns that look the same when you turn or flip them count as the same pattern.</p>
+    <div class="gbox" id="sg"></div><div class="actions"><button class="btn primary" type="button" id="sadd">Check my pattern</button><button class="btn" type="button" id="sclr">Clear</button></div>
+    <div class="fb" id="sfb"></div><div><p class="eyebrow" style="margin-bottom:6px">Patterns found: <span id="scount">0</span> of ${GOAL}</p><div class="found" id="sfound"></div></div>
+    <div class="actions"><button class="btn" type="button" id="sfin" disabled>I'm finished</button></div></div>`;
+  const box=stage.querySelector('#sg'),fb=stage.querySelector('#sfb');
+  const draw=()=>{box.innerHTML=gridSVG(toGrid(shaded),{click:true,S:70,w:240});box.querySelectorAll('[data-cell]').forEach(e=>e.onclick=()=>{const k=e.dataset.cell;shaded.has(k)?shaded.delete(k):shaded.add(k);fb.className='fb';fb.innerHTML='';draw()})};
+  draw();
+  stage.querySelector('#sclr').onclick=()=>{shaded.clear();draw()};
+  stage.querySelector('#sadd').onclick=()=>{
+    if(shaded.size!==4){feedback(fb,false,`Shade exactly 4 squares. You have shaded ${shaded.size}.`,'info');return}
+    const g=toGrid(shaded),L=symList(g);tries++;
+    if(!L.length){tryAgain(fb,'This pattern has no line of symmetry. Use a mirror line in your head to check.');return}
+    const key=canon(shaded);if(found.has(key)){feedback(fb,false,'You already found this pattern. It may be turned or flipped. Try a different one.','info');return}
+    found.set(key,{g,L});confetti();feedback(fb,true,`This pattern has ${L.length} line${L.length>1?'s':''} of symmetry.`);
+    stage.querySelector('#sfound').innerHTML=[...found.values()].map(o=>gridSVG(o.g,{S:30,w:72,lines:o.L})).join('');
+    stage.querySelector('#scount').textContent=found.size;stage.querySelector('#sfin').disabled=false;api.progress(found.size,GOAL,`${found.size} of ${GOAL} patterns found`);
+    shaded.clear();draw();
+    if(found.size===GOAL)setTimeout(()=>api.finish(GOAL,GOAL,{line:`You found all <b>${GOAL}</b> patterns!`,stars:3}),900);
+  };
+  stage.querySelector('#sfin').onclick=()=>api.finish(found.size,GOAL,{stars:found.size>=12?3:found.size>=8?2:found.size>=4?1:0,line:`You found <b>${found.size}</b> of the ${GOAL} different patterns.`,
+    note:'There are 12 different patterns. Making a list and changing one square at a time helps you to not repeat patterns.'});
+}
+
+/* ---- Game: Colour the grid (Check your progress Q6) ---- */
+function runCGrid(stage,api){
+  const targets=[[0,'a','no lines of symmetry'],[1,'b','exactly <b>1</b> line of symmetry'],[2,'c','exactly <b>2</b> lines of symmetry'],[4,'d','exactly <b>4</b> lines of symmetry']];
+  const steps=targets.map(([n,q,t])=>(el,done)=>{const g=[...Array(4)].map(()=>Array(4).fill('W'));let brush='R',lines=[],locked=false;
+    el.innerHTML=`<p class="eyebrow">Check your progress · Question 6${q}</p><div class="prompt">Colour the grid so that there ${n===1?'is':'are'} ${t}.</div>
+      <div class="palette">${['R','T','Y','N','P'].map(k=>`<button type="button" class="sw" data-c="${k}" style="background:${PAINT[k]}" aria-label="${PNAME[k]}" title="${PNAME[k]}"></button>`).join('')}<button type="button" class="sw sw-txt" data-c="W">Rubber</button></div><div class="gbox"></div>`;
+    const box=el.querySelector('.gbox');
+    const render=()=>{box.innerHTML=gridSVG(g,{click:!locked,lines,S:60,w:280});box.querySelectorAll('[data-cell]').forEach(e=>e.onclick=()=>{if(locked)return;const[r,c]=e.dataset.cell.split(',').map(Number);g[r][c]=brush;render()})};
+    render();box.after(mirrorTools(el,ls=>{lines=ls;render()}));
+    el.querySelectorAll('.sw').forEach(b=>b.onclick=()=>{brush=b.dataset.c;el.querySelectorAll('.sw').forEach(x=>x.classList.toggle('on',x===b))});el.querySelector('.sw').classList.add('on');
+    checker(el,'Check',()=>{if(g.every(r=>r.every(k=>k==='W')))return{incomplete:1,msg:'Colour some squares first.'};const L=symList(g);
+      return L.length===n?{ok:1,msg:n===0?'Your pattern has no lines of symmetry.':`Your pattern has exactly ${n} line${n>1?'s':''} of symmetry.`}:{ok:0,msg:`Your pattern has ${L.length} line${L.length===1?'':'s'} of symmetry. You need ${n===0?'none':n}.`}},
+      first=>{locked=true;lines=symList(g);render();el.querySelectorAll('.sw').forEach(x=>x.disabled=true);done(first)});
+  });
+  runSeq(stage,api,steps,'Part');
+}
+
+GAMES.push(
+ {id:'warm',sec:'2.1',col:'var(--c8)',title:'Shape Warm-up',badge:'Polygons',blurb:'Polygons, right angles, symmetry and tessellation.',src:'Getting started',run:runWarm},
+ {id:'tsort',sec:'2.1',col:'var(--c1)',title:'Triangle Sorter',badge:'△ △ △',blurb:'Equilateral, isosceles or scalene? Measure and decide.',src:'Worked example 1 · Exercise 2.1 Q1, Q2, Q4 · Think like a mathematician',run:runTriSort},
+ {id:'tbuild',sec:'2.1',col:'var(--c4)',title:'Triangle Builder',badge:'• • •',blurb:'Drag the corners on a dot grid to make each triangle.',src:'Exercise 2.1 Q3 · Check your progress Q1',run:runBuilder},
+ {id:'tess',sec:'2.1',col:'var(--c5)',title:'Tessellation Spotter',badge:'▲▼▲▼',blurb:'Name the triangles in each tiling pattern.',src:'Exercise 2.1 Q5, Q6 · Check your progress Q3',run:runTess},
+ {id:'lines',sec:'2.2',col:'var(--c2)',title:'Mirror Lines',badge:'3 lines',blurb:'Count the lines of symmetry in triangles and patterns.',src:'Worked example 2 · Exercise 2.2 Q1 · Check your progress Q4',run:runLines},
+ {id:'star',sec:'2.2',col:'var(--c6)',title:'The Star Square',badge:'*',blurb:'Choose a colour for * to make 1 or 2 lines of symmetry.',src:'Exercise 2.2 Q3',run:runStar},
+ {id:'paint',sec:'2.2',col:'var(--c3)',title:'Mirror Painter',badge:'A – G',blurb:'Reflect a tile pattern in two mirror lines.',src:'Exercise 2.2 Q4',run:runPainter},
+ {id:'reflect',sec:'2.2',col:'var(--c7)',title:'Reflect the Shapes',badge:'◇ ▭ ◺',blurb:'Reflect shapes until each quarter has three shapes.',src:'Exercise 2.2 Q5',run:runReflect},
+ {id:'studio',sec:'2.2',col:'var(--c4)',title:'Symmetry Studio',badge:'3 × 3',blurb:'Shade 4 squares. How many symmetrical patterns can you find?',src:'Think like a mathematician (page 31)',run:runStudio},
+ {id:'cgrid',sec:'2.2',col:'var(--c1)',title:'Colour the Grid',badge:'4 × 4',blurb:'Colour a grid with 0, 1, 2 or 4 lines of symmetry.',src:'Check your progress Q6',run:runCGrid},
+);
+SECS.push(
+ {k:'2.1',unit:2,c:'var(--c1)',title:'Triangles',p:'Names and properties of triangles, sketching triangles and tessellation.'},
+ {k:'2.2',unit:2,c:'var(--c3)',title:'Symmetry',p:'Symmetry in triangles and patterns, and making patterns with lines of symmetry.'},
+);
 
 renderHub();
 </script>
