@@ -891,9 +891,12 @@ function runTess(stage,api){
 function runLines(stage,api){
   const C=k=>`var(--c${k})`;
   const tris=[[rot(ISO(2.6,3.6),200),'var(--accent)'],[[[0,3],[5.5,0],[1.6,2.0]],C(5)],[ISO(4.6,2.6),C(3)],[rot(ISO(2.8,3.2),90),C(6)],[[[0,2.4],[4.2,2.4],[3.2,0]],C(2)],[rot(EQ(3.2),180),C(4)]];
-  const triQ=(p,col,eb,prompt)=>{const n=symLines(p).length;return mcStep({eb,prompt:prompt||'How many lines of symmetry does this triangle have?',extra:`<div class="tribox">${triSVG(p,col,{w:260,h:220,lines:false})}</div>`,
-    options:['0','1','2','3'],answer:String(n),explain:n===0?'This triangle is scalene. It has no lines of symmetry.':n===1?'This triangle is isosceles. It has 1 line of symmetry.':'This triangle is equilateral. It has 3 lines of symmetry.',hint:'Imagine folding the triangle so that one half fits exactly on the other.',
-    after(el){el.querySelector('.tribox').innerHTML=triSVG(p,col,{w:260,h:220,lines:true})}})};
+  const triQ=(p,col,eb,prompt)=>{const n=symLines(p).length;let ms=false,shown=false;
+    const paint=el=>{el.querySelector('.tribox').innerHTML=triSVG(p,col,{w:300,h:240,lines:shown,measure:ms});const b=el.querySelector('.ms');b.textContent=ms?'Hide the measurements':'Measure the sides';b.classList.toggle('on',ms)};
+    return mcStep({eb,prompt:prompt||'How many lines of symmetry does this triangle have?',extra:`<div class="tribox"></div><div class="tools"><button type="button" class="ms">Measure the sides</button></div>`,
+    options:['0','1','2','3'],answer:String(n),explain:n===0?'This triangle is scalene. It has no lines of symmetry.':n===1?'This triangle is isosceles. It has 1 line of symmetry.':'This triangle is equilateral. It has 3 lines of symmetry.',hint:'Measure the sides. Equal sides help you find the lines of symmetry.',
+    bind(el){paint(el);el.querySelector('.ms').onclick=()=>{ms=!ms;paint(el)}},
+    after(el){shown=true;paint(el)}})};
   const grids=[
     [['T','Y','T','N'],['P','N','P','O'],['T','R','O','Y'],['Y','R','N','T']],
     [['R','Y','Y','R'],['N','T','T','N'],['P','P','P','P'],['O','N','N','O']],
