@@ -229,6 +229,12 @@ mark{background:var(--accent);color:#2B2100;border-radius:6px;padding:0 4px}
 .tools{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
 .tools button{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-weight:700;font-size:14px}
 .tools button.on{background:#E8262B;color:#fff;border-color:#E8262B}
+.mtwrap{display:flex;flex-direction:column;gap:12px}
+.tools.ft button{border-color:var(--c3);color:var(--c3)}
+.tools.ft button.on{background:var(--c3);color:#fff;border-color:var(--c3)}
+.tools.ft button:disabled{opacity:.5;cursor:default}
+.foldmsg{flex-basis:100%;text-align:center;font-family:var(--display);font-weight:600;font-size:17px;min-height:1.4em}
+.foldmsg.ok{color:var(--good)}.foldmsg.no{color:var(--bad)}
 .diagram .symline{stroke:#E8262B;stroke-width:3;stroke-dasharray:8 5}
 .diagram .gridl{stroke:var(--c2);stroke-opacity:.35;stroke-width:1}
 .diagram .mirror{stroke:var(--ink);stroke-width:2.5;stroke-dasharray:6 5}
@@ -773,10 +779,55 @@ function gridSVG(g,o){o=o||{};const n=g.length,S=o.S||44,W=n*S;let s=`<svg class
   (o.lines||[]).forEach(l=>{const a=LN[l];s+=`<line class="symline" x1="${a[0]}" y1="${a[1]}" x2="${a[2]}" y2="${a[3]}"/>`});
   return s+'</svg>';
 }
-function mirrorTools(el,render){const on=new Set();const box=document.createElement('div');box.className='tools';
+function mirrorTools(el,render,fold){const on=new Set();const wrap=document.createElement('div');wrap.className='mtwrap';
+  const box=document.createElement('div');box.className='tools mt';
   box.innerHTML='<span class="hint" style="flex-basis:100%;text-align:center">Try a mirror line:</span>'+[['v','Vertical'],['h','Horizontal'],['d1','Diagonal ↘'],['d2','Diagonal ↙']].map(([k,t])=>`<button type="button" data-l="${k}">${t}</button>`).join('');
-  box.querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=b.dataset.l;on.has(k)?on.delete(k):on.add(k);b.classList.toggle('on');render([...on])});
-  return box;
+  box.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(wrap.dataset.busy)return;const k=b.dataset.l;on.has(k)?on.delete(k):on.add(k);b.classList.toggle('on');render([...on])});
+  wrap.appendChild(box);
+  if(fold){const fb=document.createElement('div');fb.className='tools ft';
+    fb.innerHTML='<span class="hint" style="flex-basis:100%;text-align:center">Fold the pattern on a line. Do the colours match?</span>'+[['v','Fold ↔ vertical'],['h','Fold ↕ horizontal'],['d1','Fold ↘ diagonal'],['d2','Fold ↙ diagonal']].map(([k,t])=>`<button type="button" data-f="${k}">${t}</button>`).join('')+'<div class="foldmsg"></div>';
+    const msg=fb.querySelector('.foldmsg'),btns=fb.querySelectorAll('button');
+    btns.forEach(b=>b.onclick=()=>{if(wrap.dataset.busy)return;const gbox=wrap.previousElementSibling;if(!gbox)return;
+      wrap.dataset.busy='1';btns.forEach(x=>{x.disabled=true;x.classList.toggle('on',x===b)});msg.className='foldmsg';msg.textContent='Folding…';
+      foldPlay(gbox,fold.grid(),b.dataset.f,ok=>{msg.className='foldmsg '+(ok?'ok':'no');msg.textContent=ok?'✓ The colours match! This is a line of symmetry.':'✗ The colours do not match. This is not a line of symmetry.'},
+        ()=>{delete wrap.dataset.busy;btns.forEach(x=>{x.disabled=false;x.classList.remove('on')});fold.restore?fold.restore([...on]):render([...on])})});
+    wrap.appendChild(fb)}
+  return wrap;
+}
+/* Fold animation: one half turns over the mirror line (3D fold) and lands on the other half */
+function foldPlay(gbox,g,k,onRes,onEnd){
+  const n=g.length,S=44,W=n*S,P=8,h=W/2,uid='f'+Math.random().toString(36).slice(2,8);
+  const cur=gbox.querySelector('svg');const mw=(cur&&cur.style.maxWidth)||'280px';
+  const cells=g.map((row,r)=>row.map((c,j)=>`<rect x="${j*S}" y="${r*S}" width="${S}" height="${S}" fill="${c?PAINT[c]:'var(--surface)'}" stroke="var(--ink)" stroke-width="1.5"/>`).join('')).join('');
+  const pts=a=>a.map(q=>q.join(',')).join(' ');
+  const G={v:{mov:[[h,0],[W,0],[W,W],[h,W]],st:[[0,0],[h,0],[h,W],[0,W]],u:[0,1],line:[h,-P,h,W+P],f:(r,c)=>[r,n-1-c],inSt:(r,c)=>c+.5<n/2},
+    h:{mov:[[0,h],[W,h],[W,W],[0,W]],st:[[0,0],[W,0],[W,h],[0,h]],u:[1,0],line:[-P,h,W+P,h],f:(r,c)=>[n-1-r,c],inSt:(r,c)=>r+.5<n/2},
+    d1:{mov:[[0,0],[W,0],[W,W]],st:[[0,0],[W,W],[0,W]],u:[Math.SQRT1_2,Math.SQRT1_2],line:[-P,-P,W+P,W+P],f:(r,c)=>[c,r],inSt:(r,c)=>r>c},
+    d2:{mov:[[W,0],[W,W],[0,W]],st:[[0,0],[W,0],[0,W]],u:[Math.SQRT1_2,-Math.SQRT1_2],line:[W+P,-P,-P,W+P],f:(r,c)=>[n-1-c,n-1-r],inSt:(r,c)=>r+c<n-1}}[k];
+  const L=G.line;
+  gbox.innerHTML=`<svg class="diagram gsvg" viewBox="${-P} ${-P} ${W+2*P} ${W+2*P}" style="max-width:${mw}">
+    <defs><clipPath id="${uid}s"><polygon points="${pts(G.st)}"/></clipPath><clipPath id="${uid}m"><polygon points="${pts(G.mov)}"/></clipPath></defs>
+    <polygon points="${pts(G.mov)}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <g clip-path="url(#${uid}s)">${cells}</g>
+    <g class="flap" style="filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))"><g clip-path="url(#${uid}m)">${cells}<polygon class="shade" points="${pts(G.mov)}" fill="#000" fill-opacity="0"/></g><polygon points="${pts(G.mov)}" fill="none" stroke="var(--ink)" stroke-width="2.5"/></g>
+    <g class="marks"></g>
+    <line class="symline" x1="${L[0]}" y1="${L[1]}" x2="${L[2]}" y2="${L[3]}"/></svg>`;
+  const svg=gbox.querySelector('svg'),flap=svg.querySelector('.flap'),shade=svg.querySelector('.shade'),marks=svg.querySelector('.marks');
+  const [ux,uy]=G.u,nx=-uy,ny=ux;
+  const set=th=>{const c=Math.cos(th);const a=ux*ux+c*nx*nx,b=ux*uy+c*nx*ny,d=uy*uy+c*ny*ny;
+    const e=h-(a*h+b*h),f=h-(b*h+d*h);flap.setAttribute('transform',`matrix(${a} ${b} ${b} ${d} ${e} ${f})`);
+    shade.setAttribute('fill-opacity',(0.28*Math.sin(th)).toFixed(3))};
+  const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  const anim=(from,to,ms,then)=>{const t0=performance.now();const step=now=>{const t=Math.min(1,(now-t0)/ms);set(from+(to-from)*ease(t));t<1?requestAnimationFrame(step):then()};requestAnimationFrame(step)};
+  set(0);
+  setTimeout(()=>anim(0,Math.PI,1600,()=>{
+    let bad=[];for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(G.inSt(r,c)){const[a,b]=G.f(r,c);if(g[r][c]!==g[a][b])bad.push([r,c])}
+    const ok=!bad.length;
+    marks.innerHTML=ok?`<rect x="-3" y="-3" width="${W+6}" height="${W+6}" fill="none" stroke="var(--good)" stroke-width="6" rx="4"/>`
+      :bad.map(([r,c])=>`<rect x="${c*S+3}" y="${r*S+3}" width="${S-6}" height="${S-6}" fill="none" stroke="#E8262B" stroke-width="4"/><circle cx="${c*S+S/2}" cy="${r*S+S/2}" r="11" fill="#fff" stroke="#E8262B" stroke-width="2"/><text x="${c*S+S/2}" y="${r*S+S/2+6}" text-anchor="middle" font-size="17" style="fill:#E8262B">✗</text>`).join('');
+    onRes(ok);
+    setTimeout(()=>{marks.innerHTML='';anim(Math.PI,0,1200,()=>setTimeout(onEnd,250))},2600);
+  }),300);
 }
 
 /* ---- Game: Shape warm-up (Getting started) ---- */
@@ -904,8 +955,8 @@ function runLines(stage,api){
     [['O','Y','Y','O'],['Y','P','P','Y'],['Y','P','P','Y'],['O','Y','Y','O']]];
   const gridQ=(g,eb)=>{const L=symList(g),n=L.length;let lines=[];return mcStep({eb,prompt:'How many lines of symmetry does this pattern have? Use the mirror lines to check, like a small mirror.',extra:'<div class="gbox"></div>',
     options:['0','1','2','3','4'],answer:String(n),explain:n===0?'Every mirror line gives different colours on each side, so the pattern has 0 lines of symmetry.':`The pattern has ${n} line${n>1?'s':''} of symmetry.`,hint:'Check each mirror line. Do the colours match on both sides?',
-    bind(el){const box=el.querySelector('.gbox');const r=ls=>{lines=ls;box.innerHTML=gridSVG(g,{lines:ls})};r([]);box.after(mirrorTools(el,r))},
-    after(el){el.querySelector('.gbox').innerHTML=gridSVG(g,{lines:L});const t=el.querySelector('.tools');if(t)t.remove()}})};
+    bind(el){const box=el.querySelector('.gbox');const r=ls=>{lines=ls;box.innerHTML=gridSVG(g,{lines:ls})};r([]);box.after(mirrorTools(el,r,{grid:()=>g,restore:ls=>{el.dataset.answered?box.innerHTML=gridSVG(g,{lines:L}):r(ls)}}))},
+    after(el){el.dataset.answered='1';el.querySelector('.gbox').innerHTML=gridSVG(g,{lines:L});const t=el.querySelector('.tools.mt');if(t)t.remove()}})};
   runSeq(stage,api,[
     ...tris.map((t,k)=>triQ(t[0],t[1],`Exercise 2.2 · Question 1${'abcdef'[k]}`)),
     triQ(EQ(3.4),C(1),'Check your progress · Question 4','How many lines of symmetry does an equilateral triangle have?'),
@@ -923,8 +974,9 @@ function runStar(stage,api){
     el.innerHTML=`<p class="eyebrow">Exercise 2.2 · Question 3${pt.q}</p><div class="prompt">What colour can you colour the square at <b>*</b> to make a pattern with ${pt.t}?</div><div class="gbox"></div>
       <div class="palette">${['K','G','L','W'].map(k=>`<button type="button" class="sw" data-c="${k}" style="background:${PAINT[k]}" aria-label="${PNAME[k]}" title="${PNAME[k]}"></button>`).join('')}<button type="button" class="sw sw-txt" data-c="none">It is not possible</button></div>`;
     const box=el.querySelector('.gbox');
-    const render=()=>{const g=base.map(r=>r.slice());if(choice&&choice!=='none')g[4][4]=choice;box.innerHTML=gridSVG(g,{labels:choice&&choice!=='none'?{}:{'4,4':'*'},lines,w:260})};
-    render();box.after(mirrorTools(el,ls=>{lines=ls;render()}));
+    const cur=()=>{const g=base.map(r=>r.slice());if(choice&&choice!=='none')g[4][4]=choice;return g};
+    const render=()=>{box.innerHTML=gridSVG(cur(),{labels:choice&&choice!=='none'?{}:{'4,4':'*'},lines,w:260})};
+    render();box.after(mirrorTools(el,ls=>{lines=ls;render()},{grid:cur}));
     el.querySelectorAll('.sw').forEach(b=>b.onclick=()=>{choice=b.dataset.c;el.querySelectorAll('.sw').forEach(x=>x.classList.toggle('on',x===b));render()});
     checker(el,'Check',()=>{if(!choice)return{incomplete:1,msg:'Choose a colour for the * square first.'};return pt.ok(choice)?{ok:1,msg:pt.good}:{ok:0,msg:'Use the mirror lines to count the lines of symmetry.'}},first=>{el.querySelectorAll('.sw').forEach(x=>x.disabled=true);done(first)});
   });
@@ -1035,7 +1087,7 @@ function runCGrid(stage,api){
       <div class="palette">${['R','T','Y','N','P'].map(k=>`<button type="button" class="sw" data-c="${k}" style="background:${PAINT[k]}" aria-label="${PNAME[k]}" title="${PNAME[k]}"></button>`).join('')}<button type="button" class="sw sw-txt" data-c="W">Rubber</button></div><div class="gbox"></div>`;
     const box=el.querySelector('.gbox');
     const render=()=>{box.innerHTML=gridSVG(g,{click:!locked,lines,S:60,w:280});box.querySelectorAll('[data-cell]').forEach(e=>e.onclick=()=>{if(locked)return;const[r,c]=e.dataset.cell.split(',').map(Number);g[r][c]=brush;render()})};
-    render();box.after(mirrorTools(el,ls=>{lines=ls;render()}));
+    render();box.after(mirrorTools(el,ls=>{lines=ls;render()},{grid:()=>g}));
     el.querySelectorAll('.sw').forEach(b=>b.onclick=()=>{brush=b.dataset.c;el.querySelectorAll('.sw').forEach(x=>x.classList.toggle('on',x===b))});el.querySelector('.sw').classList.add('on');
     checker(el,'Check',()=>{if(g.every(r=>r.every(k=>k==='W')))return{incomplete:1,msg:'Colour some squares first.'};const L=symList(g);
       return L.length===n?{ok:1,msg:n===0?'Your pattern has no lines of symmetry.':`Your pattern has exactly ${n} line${n>1?'s':''} of symmetry.`}:{ok:0,msg:`Your pattern has ${L.length} line${L.length===1?'':'s'} of symmetry. You need ${n===0?'none':n}.`}},
