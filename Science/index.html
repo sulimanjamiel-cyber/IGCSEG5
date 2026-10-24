@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maaz's Science Quest</title>
+<meta name="description" content="Interactive science games for Maaz – Cambridge Primary Science, Stage 5.">
+<meta property="og:title" content="Maaz's Science Quest 🔬">
+<meta property="og:description" content="Interactive science games for Maaz – Cambridge Primary Science, Stage 5. Unit 1: Life cycles of flowering plants.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Maaz's Science Quest 🔬">
+<meta name="twitter:description" content="Interactive science games – Cambridge Primary Science, Stage 5.">
+<meta name="theme-color" content="#7b2ff7">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔬</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Cairo:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#2b2350; --muted:#6b6490; --card:#ffffff; --bg1:#ffe9f3; --bg2:#e6f4ff;
+  --purple:#7b2ff7; --pink:#ff4d8d; --orange:#ff9f1c; --green:#2ec4b6; --good:#22b35e; --bad:#ef476f;
+  --yellow:#ffd23f; --blue:#3a86ff; --shadow:0 6px 0 rgba(43,35,80,.12), 0 10px 24px rgba(43,35,80,.10);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:'Baloo 2',system-ui,sans-serif;color:var(--ink);min-height:100vh;
+  background:linear-gradient(160deg,var(--bg1) 0%,#fff6e0 45%,var(--bg2) 100%) fixed;}
+#app{max-width:780px;margin:0 auto;padding:16px 16px 60px}
+button{font-family:inherit;cursor:pointer}
+h1,h2,h3{margin:0;line-height:1.15}
+
+/* top bar */
+.bar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.back{border:0;background:#fff;border-radius:14px;padding:8px 14px;font-size:18px;font-weight:700;color:var(--purple);box-shadow:var(--shadow)}
+.bar .t{flex:1;font-size:20px;font-weight:800}
+.starsum{background:#fff;border-radius:14px;padding:6px 12px;font-weight:800;box-shadow:var(--shadow);white-space:nowrap}
+
+/* home */
+.hero{text-align:center;padding:18px 10px 8px}
+.hero .logo{font-size:64px;line-height:1;animation:bob 3s ease-in-out infinite}
+.hero h1{font-size:40px;font-weight:800;background:linear-gradient(90deg,var(--purple),var(--pink),var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:4px 0 0;color:var(--muted);font-size:18px}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-8px) rotate(4deg)}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px}
+.tile{position:relative;border:0;text-align:left;border-radius:22px;padding:16px;color:#fff;box-shadow:var(--shadow);min-height:130px;display:flex;flex-direction:column;justify-content:space-between;transition:transform .15s}
+.tile:active{transform:scale(.97)}
+.tile .ic{font-size:42px;line-height:1}
+.tile .lbl{font-size:13px;font-weight:700;opacity:.9;text-transform:uppercase;letter-spacing:.5px}
+.tile .nm{font-size:21px;font-weight:800;line-height:1.15}
+.tile .st{font-size:15px;font-weight:700;margin-top:6px;background:rgba(255,255,255,.25);border-radius:10px;padding:2px 8px;align-self:flex-start}
+.tile.locked{filter:grayscale(.6);opacity:.6;cursor:not-allowed}
+.credit{margin-top:34px;text-align:center;font-family:'Cairo',sans-serif;font-weight:700;font-size:18px;color:var(--purple);background:#fff;border-radius:18px;padding:12px;box-shadow:var(--shadow)}
+.credit .ph{display:block;direction:ltr;font-family:'Baloo 2',sans-serif;color:var(--pink);font-size:18px}
+
+/* section intro */
+.learn{background:#fff;border-radius:20px;padding:14px 16px;box-shadow:var(--shadow);margin-bottom:14px;font-size:17px}
+.learn b{color:var(--purple)}
+.words{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.words span{background:#f1eaff;color:var(--purple);border-radius:10px;padding:2px 10px;font-weight:700;font-size:15px}
+
+/* game shell */
+.panel{background:#fff;border-radius:24px;padding:16px;box-shadow:var(--shadow)}
+.prog{height:12px;background:#eee8ff;border-radius:10px;overflow:hidden;margin-bottom:14px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--blue),var(--purple));border-radius:10px;transition:width .4s}
+.inst{font-size:18px;font-weight:700;color:var(--muted);margin-bottom:10px}
+.q{font-size:22px;font-weight:800;margin:4px 0 14px;line-height:1.25}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;border:3px solid #e7e2fb;background:#fbfaff;border-radius:16px;padding:10px 12px;font-size:19px;font-weight:600;color:var(--ink);text-align:left;transition:all .15s}
+.opt .L{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--purple);color:#fff;font-weight:800;direction:ltr}
+.opt:hover{border-color:#cbbcff}
+.opt.ok{border-color:var(--good);background:#e8fbef}.opt.ok .L{background:var(--good)}
+.opt.no{border-color:var(--bad);background:#fff0f3;opacity:.6}.opt.no .L{background:var(--bad)}
+.opt:disabled{cursor:default}
+.next{display:block;margin:16px auto 0;border:0;background:linear-gradient(90deg,var(--purple),var(--pink));color:#fff;font-size:21px;font-weight:800;border-radius:18px;padding:10px 30px;box-shadow:var(--shadow)}
+.next:disabled{opacity:.4}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.pop{animation:pop .35s}
+@keyframes pop{0%{transform:scale(.8)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;font-size:20px;font-weight:800;padding:10px 22px;border-radius:18px;transition:transform .3s;z-index:50;text-align:center;max-width:92vw}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#toast.good{background:var(--good)}#toast.bad{background:var(--bad)}
+
+/* sort */
+.card{margin:6px auto 16px;max-width:420px;background:linear-gradient(135deg,#fff,#f6f1ff);border:3px dashed #cbbcff;border-radius:22px;padding:16px;text-align:center}
+.card .e{font-size:58px;line-height:1.1}
+.card .tx{font-size:21px;font-weight:800}
+.bins{display:grid;gap:10px;font-size:18px}
+.bin{border:0;border-radius:18px;padding:10px 6px;color:#fff;font-weight:800;font-size:inherit;overflow-wrap:normal;min-height:86px;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:var(--shadow)}
+.bin .bi{font-size:30px;line-height:1}
+.bin .chips{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.bin .chips span{background:rgba(255,255,255,.3);border-radius:8px;padding:0 6px;font-size:13px;font-weight:700}
+
+/* order */
+.slots{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.slot{display:flex;align-items:center;gap:10px;border:3px dashed #d9d1fb;border-radius:14px;min-height:50px;padding:6px 10px;font-size:18px;font-weight:700;background:#fcfbff}
+.slot .n{flex:none;width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;display:grid;place-items:center;font-weight:800}
+.slot.filled{border-style:solid;border-color:var(--purple);background:#f4efff;cursor:pointer}
+.pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{border:0;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-weight:700;font-size:17px;border-radius:14px;padding:8px 14px;box-shadow:var(--shadow)}
+.chip:disabled{opacity:.25}
+.ring{position:relative;width:min(340px,86vw);height:min(340px,86vw);margin:14px auto}
+.ring svg{position:absolute;inset:0;width:100%;height:100%}
+.ring .rb{position:absolute;transform:translate(-50%,-50%);background:#fff;border:3px solid var(--purple);border-radius:14px;padding:4px 8px;font-size:14px;font-weight:800;text-align:center;max-width:120px;line-height:1.1}
+
+/* match */
+.mcols{display:grid;grid-template-columns:1fr 1.4fr;gap:10px}
+.mi{border:3px solid #e7e2fb;background:#fbfaff;border-radius:14px;padding:8px 10px;font-size:17px;font-weight:700;color:var(--ink);text-align:left;margin-bottom:8px;width:100%;min-height:48px}
+.mi.sel{border-color:var(--orange);background:#fff5e6}
+.mi.done{color:#fff;border-color:transparent}
+
+/* selects */
+select{font-family:inherit;font-size:17px;font-weight:700;border:3px solid #cbbcff;border-radius:12px;padding:4px 8px;background:#fff;color:var(--ink);max-width:100%}
+select.ok{border-color:var(--good);background:#e8fbef}
+select.no{border-color:var(--bad);background:#fff0f3}
+.lrow{display:flex;align-items:center;gap:10px;margin:6px 0}
+.lrow .n{flex:none;width:34px;height:34px;border-radius:50%;background:var(--pink);color:#fff;display:grid;place-items:center;font-weight:800}
+.fill p{font-size:19px;line-height:2.1;margin:6px 0}
+
+/* key */
+.keyq{display:flex;align-items:center;gap:8px;border-radius:14px;padding:8px 12px;margin:6px 0;font-size:18px;font-weight:700;background:#f6f3ff;color:#aaa3c8}
+.keyq.on{background:#fff5e6;color:var(--ink);border:3px solid var(--orange)}
+.keyq.done{background:#e8fbef;color:var(--ink)}
+.keyq .yn{margin-left:auto;display:flex;gap:6px}
+.keyq .yn button{border:0;border-radius:12px;padding:4px 14px;font-weight:800;font-size:17px;color:#fff}
+.yes{background:var(--good)}.no2{background:var(--bad)}
+.badge{display:inline-block;background:linear-gradient(90deg,var(--green),var(--blue));color:#fff;border-radius:14px;padding:6px 16px;font-size:20px;font-weight:800}
+
+/* bee game */
+.garden{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:linear-gradient(#bde8ff,#d9f7c9);border-radius:20px;padding:10px;position:relative;overflow:hidden}
+.garden svg{width:100%;height:auto}
+.garden .tgt{cursor:pointer}
+#bee{position:absolute;font-size:38px;transition:left .7s ease,top .7s ease;pointer-events:none;z-index:3}
+#bee .pd{position:absolute;right:-4px;bottom:2px;width:14px;height:14px;border-radius:50%;border:2px solid #fff;display:none}
+.legend{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin:8px 0;font-weight:700}
+.legend i{display:inline-block;width:16px;height:16px;border-radius:50%;vertical-align:-2px;margin-right:4px}
+
+/* lab */
+.tabs{display:flex;gap:8px;margin-bottom:10px}
+.tabs button{flex:1;border:0;border-radius:14px;padding:8px;font-size:18px;font-weight:800;background:#eee8ff;color:var(--purple)}
+.tabs button.on{background:var(--purple);color:#fff}
+.days{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.days button{border:0;border-radius:12px;padding:6px 9px;font-weight:800;font-size:17px;background:#fff3d6;color:#b26a00}
+.days button.on{background:var(--orange);color:#fff}
+.jars{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.jar{text-align:center;font-weight:800}
+.jar svg{width:100%;max-width:190px;height:auto}
+table.res{width:100%;border-collapse:collapse;margin-top:10px;font-size:17px}
+table.res th,table.res td{border:2px solid #e2dbff;padding:6px;text-align:center}
+table.res th{background:#f4efff}
+
+/* finish */
+.win{text-align:center;padding:20px 8px}
+.win .big{font-size:70px;line-height:1}
+.win h2{font-size:32px;color:var(--purple)}
+.win .stars{font-size:46px;letter-spacing:6px;margin:8px 0}
+.confetti{position:fixed;top:-40px;font-size:28px;pointer-events:none;z-index:60;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+.chart{width:100%;max-width:520px;display:block;margin:0 auto 8px}
+.jumpy{animation:jump .35s ease-out 3}
+@keyframes jump{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+.wob{animation:wob .12s linear 8;transform-origin:center}
+@keyframes wob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.btnrow{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.act{border:0;border-radius:16px;padding:10px 14px;font-size:18px;font-weight:800;color:#fff;background:linear-gradient(90deg,var(--blue),var(--purple));box-shadow:var(--shadow);text-align:left}
+.act.tried{background:linear-gradient(90deg,var(--good),var(--green))}
+.toggle{display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap}
+.toggle b{width:100%}
+.toggle button{border:3px solid #cbbcff;background:#fff;border-radius:14px;padding:6px 16px;font-size:17px;font-weight:800;color:var(--ink)}
+.toggle button.on{background:var(--purple);border-color:var(--purple);color:#fff}
+canvas.wave{width:100%;height:170px;background:#0f1b3d;border-radius:18px;display:block}
+.task{background:#fff5e6;border:3px solid var(--orange);border-radius:16px;padding:10px 12px;font-size:19px;font-weight:800;margin:10px 0}
+.neck{background:linear-gradient(#8d5a2b,#6d4321);border-radius:16px;padding:10px 6px;position:relative}
+.srow{position:relative;height:42px;cursor:pointer;display:flex;align-items:center}
+.srow .str{width:100%;background:linear-gradient(#f5f5f5,#9e9e9e);border-radius:3px}
+.srow .str.vib{animation:vib .05s linear 14}
+@keyframes vib{0%,100%{transform:translateY(-2px)}50%{transform:translateY(2px)}}
+.srow .tg{position:absolute;right:6px;top:2px;font-size:12px;font-weight:800;color:#ffe0b2}
+.srow.red .str{background:linear-gradient(#ff8a80,#d32f2f)}
+.bottles{display:flex;gap:4px;justify-content:center;align-items:flex-end;background:#f4efff;border-radius:18px;padding:10px 4px}
+.bottles svg{width:11%;max-width:62px;cursor:pointer}
+.note{background:#fff8e1;border-left:6px solid var(--orange);border-radius:12px;padding:8px 12px;margin:10px 0;font-size:17px}
+@media (max-width:480px){
+  .hero h1{font-size:32px}.q{font-size:20px}.opt{font-size:17px}.mcols{grid-template-columns:1fr 1.3fr}.mi{font-size:15px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast"></div>
+<script>
+/* ============ helpers ============ */
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const esc = s => String(s);
+const TRY = ["Try again! 💪", "Not yet – have another go! 🌱", "Almost! Try again 🐝", "Think again, Maaz! 🤔", "Keep going – try again! 🌻"];
+const YAY = ["Great job! ⭐", "Brilliant! 🌟", "Well done, Maaz! 🎉", "Super scientist! 🔬", "Correct! 🌻"];
+const pick = a => a[Math.floor(Math.random() * a.length)];
+let toastT;
+function toast(msg, kind) { const t = $('#toast'); t.textContent = msg; t.className = 'show ' + (kind || ''); clearTimeout(toastT); toastT = setTimeout(() => t.className = '', 1600); }
+function shake(el) { if (!el) return; el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
+function popEl(el) { if (!el) return; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+let actx;
+function beep(good) {
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const notes = good ? [523, 659, 784] : [220, 180];
+    notes.forEach((f, i) => {
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = good ? 'triangle' : 'sawtooth'; o.frequency.value = f;
+      g.gain.setValueAtTime(.0001, actx.currentTime + i * .09);
+      g.gain.exponentialRampToValueAtTime(good ? .18 : .08, actx.currentTime + i * .09 + .02);
+      g.gain.exponentialRampToValueAtTime(.0001, actx.currentTime + i * .09 + .18);
+      o.connect(g); g.connect(actx.destination); o.start(actx.currentTime + i * .09); o.stop(actx.currentTime + i * .09 + .2);
+    });
+  } catch (e) {}
+}
+function confetti() {
+  const em = ['🌸', '🌻', '⭐', '🐝', '🌱', '🎉', '🦋', '🌷'];
+  for (let i = 0; i < 34; i++) {
+    const s = document.createElement('span'); s.className = 'confetti'; s.textContent = pick(em);
+    s.style.left = Math.random() * 100 + 'vw'; s.style.animationDuration = (2 + Math.random() * 2) + 's'; s.style.animationDelay = Math.random() * .6 + 's';
+    document.body.appendChild(s); setTimeout(() => s.remove(), 5000);
+  }
+}
+/* stars storage (per browser) */
+let STARS = {};
+try { STARS = JSON.parse(localStorage.getItem('maazScienceStars') || '{}') || {}; } catch (e) { STARS = {}; }
+function saveStar(id, n) { if (!STARS[id] || STARS[id] < n) STARS[id] = n; try { localStorage.setItem('maazScienceStars', JSON.stringify(STARS)); } catch (e) {} }
+const starStr = n => '⭐'.repeat(n) + '☆'.repeat(3 - n);
+
+/* bar chart svg */
+function barChart(labels, vals, opt) {
+  opt = opt || {}; const W = 520, H = 300, L = 46, B = 70, T = 30, R = 10;
+  const max = opt.max || Math.max(...vals); const step = opt.step || 1;
+  const cw = (W - L - R) / labels.length; const cols = opt.colors || ['#3a86ff', '#ff4d8d', '#ff9f1c', '#2ec4b6', '#7b2ff7'];
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${opt.title || 'bar chart'}">`;
+  s += `<text x="${W / 2}" y="18" text-anchor="middle" font-size="17" font-weight="800" fill="#2b2350">${opt.title || ''}</text>`;
+  for (let v = 0; v <= max; v += step) { const y = H - B - (v / max) * (H - B - T); s += `<line x1="${L}" x2="${W - R}" y1="${y}" y2="${y}" stroke="#e7e2fb"/><text x="${L - 6}" y="${y + 5}" text-anchor="end" font-size="13" fill="#6b6490">${v}</text>`; }
+  labels.forEach((l, i) => {
+    const h = (vals[i] / max) * (H - B - T), x = L + i * cw + cw * .18, w = cw * .64;
+    s += `<rect x="${x}" y="${H - B - h}" width="${w}" height="${h}" rx="6" fill="${cols[i % cols.length]}"/>`;
+    String(l).split('|').forEach((p, k) => s += `<text x="${x + w / 2}" y="${H - B + 20 + k * 17}" text-anchor="middle" font-size="14" font-weight="700" fill="#2b2350">${p}</text>`);
+  });
+  s += `<line x1="${L}" x2="${L}" y1="${T - 4}" y2="${H - B}" stroke="#2b2350" stroke-width="2"/><line x1="${L}" x2="${W - R}" y1="${H - B}" y2="${H - B}" stroke="#2b2350" stroke-width="2"/>`;
+  if (opt.ylabel) s += `<text x="14" y="${(H - B + T) / 2}" transform="rotate(-90 14 ${(H - B + T) / 2})" text-anchor="middle" font-size="13" font-weight="700" fill="#6b6490">${opt.ylabel}</text>`;
+  return s + '</svg>';
+}
+
+/* flower diagram for labelling */
+const FLOWER_SVG = `
+<svg viewBox="0 0 400 380" style="width:100%;max-width:420px;display:block;margin:0 auto" role="img" aria-label="Diagram of a flower cut in half">
+  <rect x="192" y="262" width="16" height="118" rx="6" fill="#43a047"/>
+  <path d="M200 262 Q150 268 128 236 Q165 236 200 252Z" fill="#2e7d32"/>
+  <path d="M200 262 Q250 268 272 236 Q235 236 200 252Z" fill="#2e7d32"/>
+  <ellipse cx="118" cy="170" rx="82" ry="34" transform="rotate(-38 118 170)" fill="#ff7eb3"/>
+  <ellipse cx="282" cy="170" rx="82" ry="34" transform="rotate(38 282 170)" fill="#ff7eb3"/>
+  <ellipse cx="200" cy="150" rx="40" ry="80" fill="#ffb3d1" opacity=".55"/>
+  <path d="M100 150 l20 10 M108 175 l18 2" stroke="#c2185b" stroke-width="3" stroke-linecap="round"/>
+  <line x1="182" y1="238" x2="146" y2="128" stroke="#f9a825" stroke-width="4"/>
+  <line x1="218" y1="238" x2="254" y2="128" stroke="#f9a825" stroke-width="4"/>
+  <ellipse cx="144" cy="120" rx="15" ry="9" fill="#ef6c00"/>
+  <ellipse cx="256" cy="120" rx="15" ry="9" fill="#ef6c00"/>
+  <circle cx="138" cy="108" r="2.5" fill="#ffca28"/><circle cx="150" cy="106" r="2.5" fill="#ffca28"/><circle cx="262" cy="106" r="2.5" fill="#ffca28"/>
+  <rect x="195" y="122" width="10" height="92" fill="#9ccc65"/>
+  <ellipse cx="200" cy="118" rx="18" ry="9" fill="#7cb342" stroke="#33691e" stroke-width="2"/>
+  <ellipse cx="200" cy="238" rx="30" ry="30" fill="#c5e1a5" stroke="#558b2f" stroke-width="3"/>
+  <circle cx="190" cy="232" r="5" fill="#fff59d" stroke="#f9a825"/><circle cx="206" cy="228" r="5" fill="#fff59d" stroke="#f9a825"/>
+  <circle cx="196" cy="248" r="5" fill="#fff59d" stroke="#f9a825"/><circle cx="210" cy="246" r="5" fill="#fff59d" stroke="#f9a825"/>
+  <g stroke="#2b2350" stroke-width="2">
+    <line x1="72" y1="190" x2="40" y2="230"/>
+    <line x1="150" y1="250" x2="70" y2="320"/>
+    <line x1="262" y1="114" x2="330" y2="60"/>
+    <line x1="238" y1="182" x2="350" y2="170"/>
+    <line x1="200" y1="110" x2="200" y2="52"/>
+    <line x1="226" y1="250" x2="330" y2="300"/>
+    <line x1="206" y1="232" x2="290" y2="345"/>
+  </g>
+  <g font-size="20" font-weight="800" fill="#fff" text-anchor="middle">
+    <circle cx="40" cy="230" r="17" fill="#ff4d8d"/><text x="40" y="237">1</text>
+    <circle cx="70" cy="320" r="17" fill="#ff4d8d"/><text x="70" y="327">2</text>
+    <circle cx="330" cy="60" r="17" fill="#ff4d8d"/><text x="330" y="67">3</text>
+    <circle cx="350" cy="170" r="17" fill="#ff4d8d"/><text x="350" y="177">4</text>
+    <circle cx="200" cy="40" r="17" fill="#ff4d8d"/><text x="200" y="47">5</text>
+    <circle cx="330" cy="300" r="17" fill="#ff4d8d"/><text x="330" y="307">6</text>
+    <circle cx="290" cy="352" r="17" fill="#ff4d8d"/><text x="290" y="359">7</text>
+  </g>
+</svg>`;
+
+/* instruments A, B, C (Unit 2 Check your progress) */
+const INSTR_SVG = `
+<svg viewBox="0 0 480 190" style="width:100%;max-width:480px;display:block;margin:0 auto 6px" role="img" aria-label="Instruments A cymbals, B a pipe with holes, C a harp">
+  <g font-size="22" font-weight="800" fill="#2b2350"><text x="20" y="24">A</text><text x="180" y="24">B</text><text x="340" y="24">C</text></g>
+  <ellipse cx="70" cy="100" rx="48" ry="16" transform="rotate(-20 70 100)" fill="#ffd23f" stroke="#c9a400" stroke-width="3"/>
+  <ellipse cx="100" cy="122" rx="48" ry="16" transform="rotate(20 100 122)" fill="#ffe066" stroke="#c9a400" stroke-width="3"/>
+  <circle cx="70" cy="100" r="6" fill="#8d6e63"/><circle cx="100" cy="122" r="6" fill="#8d6e63"/>
+  <path d="M64 96 q-30 -40 -10 -50" stroke="#8d6e63" stroke-width="6" fill="none"/><path d="M106 126 q30 30 15 45" stroke="#8d6e63" stroke-width="6" fill="none"/>
+  <line x1="205" y1="40" x2="300" y2="170" stroke="#37474f" stroke-width="14" stroke-linecap="round"/>
+  <line x1="205" y1="40" x2="216" y2="55" stroke="#cfd8dc" stroke-width="14" stroke-linecap="round"/>
+  <g fill="#cfd8dc"><circle cx="236" cy="82" r="3.5"/><circle cx="248" cy="98" r="3.5"/><circle cx="260" cy="114" r="3.5"/><circle cx="272" cy="130" r="3.5"/><circle cx="284" cy="146" r="3.5"/></g>
+  <path d="M370 175 L370 40 Q420 30 460 70 L450 175 Z" fill="none" stroke="#e09f3e" stroke-width="9" stroke-linejoin="round"/>
+  <g stroke="#795548" stroke-width="1.5">${[0,1,2,3,4,5,6,7].map(i => `<line x1="${380 + i * 9}" y1="${45 + i * 3}" x2="${380 + i * 9}" y2="170"/>`).join('')}</g>
+  <rect x="362" y="170" width="96" height="10" rx="3" fill="#e09f3e"/>
+</svg>`;
+/* Zara and Sofia's containers */
+const JARS3_SVG = `
+<svg viewBox="0 0 480 190" style="width:100%;max-width:480px;display:block;margin:0 auto 6px" role="img" aria-label="A clock next to three containers A, B and C">
+  <circle cx="50" cy="105" r="38" fill="#fff" stroke="#3a86ff" stroke-width="6"/><line x1="50" y1="105" x2="50" y2="80" stroke="#2b2350" stroke-width="4"/><line x1="50" y1="105" x2="68" y2="112" stroke="#2b2350" stroke-width="3"/>
+  <text x="50" y="165" text-anchor="middle" font-size="15" font-weight="700" fill="#6b6490">clock</text>
+  ${[['A', 120, '#9ad7f5'], ['B', 240, 'none'], ['C', 360, '#c2a878']].map(([l, x, f]) => `
+    <rect x="${x}" y="60" width="96" height="110" rx="8" fill="#f5fbff" stroke="#90a4ae" stroke-width="3"/>
+    ${f !== 'none' ? `<rect x="${x + 3}" y="72" width="90" height="95" rx="6" fill="${f}"/>` : ''}
+    ${l === 'C' ? [0, 1, 2, 3, 4, 5].map(i => `<circle cx="${x + 15 + i * 13}" cy="${90 + (i % 3) * 22}" r="3" fill="#8d6e63"/>`).join('') : ''}
+    ${l === 'A' ? `<path d="M${x + 8} 80 q12 -6 24 0 t24 0 t24 0" stroke="#fff" stroke-width="2" fill="none"/>` : ''}
+    <text x="${x + 48}" y="40" text-anchor="middle" font-size="24" font-weight="800" fill="#2b2350">${l}</text>`).join('')}
+</svg>`;
+
+/* Unit 3 diagrams */
+const STATES_SVG = `
+<svg viewBox="0 0 480 230" style="width:100%;max-width:480px;display:block;margin:0 auto" role="img" aria-label="Changes of state between solid, liquid and gas">
+  <defs><marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#2b2350"/></marker></defs>
+  ${[['Solid', 10, '#b39ddb', '🧊'], ['Liquid', 180, '#90caf9', '💧'], ['Gas', 350, '#b2dfdb', '♨️']].map(([n, x, c, e]) => `<rect x="${x}" y="80" width="120" height="70" rx="16" fill="${c}"/><text x="${x + 60}" y="112" text-anchor="middle" font-size="26">${e}</text><text x="${x + 60}" y="140" text-anchor="middle" font-size="20" font-weight="800" fill="#2b2350">${n}</text>`).join('')}
+  <g stroke="#2b2350" stroke-width="3" fill="none" marker-end="url(#ar3)">
+    <path d="M90 76 Q155 20 210 76"/><path d="M210 154 Q155 210 90 154"/><path d="M260 76 Q325 20 380 76"/><path d="M380 154 Q325 210 260 154"/></g>
+  <g font-size="18" font-weight="800" fill="#fff" text-anchor="middle">
+    <circle cx="150" cy="40" r="15" fill="#ff4d8d"/><text x="150" y="46">1</text>
+    <circle cx="150" cy="192" r="15" fill="#ff4d8d"/><text x="150" y="198">2</text>
+    <circle cx="320" cy="40" r="15" fill="#ff4d8d"/><text x="320" y="46">3</text>
+    <circle cx="320" cy="192" r="15" fill="#ff4d8d"/><text x="320" y="198">4</text></g>
+</svg>`;
+const CYCLE_SVG = `
+<svg viewBox="0 0 480 300" style="width:100%;max-width:480px;display:block;margin:0 auto" role="img" aria-label="The water cycle">
+  <rect width="480" height="300" rx="16" fill="#cfefff"/>
+  <path d="M0 220 Q120 205 240 222 L240 300 L0 300Z" fill="#4fc3f7"/>
+  <path d="M220 300 L220 215 Q300 200 340 120 L370 90 L400 120 Q440 190 480 200 L480 300Z" fill="#7cb342"/>
+  <path d="M355 105 L370 90 L385 105 Q370 112 355 105Z" fill="#fff"/>
+  <path d="M370 140 Q330 200 260 225" stroke="#4fc3f7" stroke-width="6" fill="none"/>
+  <circle cx="60" cy="55" r="26" fill="#ffd23f"/>
+  <g stroke="#ff9f1c" stroke-width="4" fill="none"><path d="M90 205 v-60 m-6 8 l6 -8 l6 8"/><path d="M120 205 v-60 m-6 8 l6 -8 l6 8"/><path d="M150 205 v-60 m-6 8 l6 -8 l6 8"/></g>
+  <g fill="#fff" stroke="#b0bec5" stroke-width="2"><ellipse cx="260" cy="60" rx="50" ry="22"/><ellipse cx="300" cy="50" rx="36" ry="22"/><ellipse cx="230" cy="58" rx="28" ry="18"/></g>
+  <g stroke="#1e88e5" stroke-width="3" stroke-linecap="round">${[0, 1, 2, 3, 4].map(i => `<line x1="${245 + i * 14}" y1="${90 + (i % 2) * 6}" x2="${240 + i * 14}" y2="${110 + (i % 2) * 6}"/>`).join('')}</g>
+  <g stroke="#2b2350" stroke-width="2"><line x1="60" y1="81" x2="40" y2="120"/><line x1="120" y1="170" x2="190" y2="160"/><line x1="300" y1="40" x2="380" y2="30"/><line x1="268" y1="112" x2="330" y2="160"/></g>
+  <g font-size="18" font-weight="800" fill="#fff" text-anchor="middle">
+    <circle cx="40" cy="125" r="15" fill="#ff4d8d"/><text x="40" y="131">1</text>
+    <circle cx="195" cy="160" r="15" fill="#ff4d8d"/><text x="195" y="166">2</text>
+    <circle cx="395" cy="30" r="15" fill="#ff4d8d"/><text x="395" y="36">3</text>
+    <circle cx="335" cy="165" r="15" fill="#ff4d8d"/><text x="335" y="171">4</text></g>
+</svg>`;
+const GASDOTS_SVG = `
+<svg viewBox="0 0 300 180" style="width:100%;max-width:320px;display:block;margin:0 auto 6px" role="img" aria-label="Particles far apart">
+  <rect width="300" height="180" rx="14" fill="#f4efff"/>
+  ${[[70, 40], [150, 50], [240, 25], [90, 95], [190, 100], [70, 150], [250, 150]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="12" fill="#3a6fd8" stroke="#1b3e8a" stroke-width="2"/><circle cx="${x - 4}" cy="${y - 4}" r="3" fill="#fff" opacity=".7"/>`).join('')}
+</svg>`;
+
+/* ============ CONTENT (from Cambridge Primary Science Learner's Book 5) ============ */
+const UNITS = [
+{ id: 1, title: 'Life cycles of flowering plants', icon: '🌻', color: 'linear-gradient(135deg,#ff4d8d,#ff9f1c)', sections: [
+
+/* ---------- 1.1 ---------- */
+{ id: '1.1', title: 'Flowering and non-flowering plants', icon: '🌷', color: 'linear-gradient(135deg,#ff4d8d,#ff7eb3)',
+  learn: 'Many plants have <b>flowers</b>. Plants without flowers – <b>mosses, ferns</b> and plants with <b>cones</b> – are non-flowering plants. Ferns and mosses make tiny <b>spores</b>. Flowers help a plant <b>reproduce</b>. All the changes from flower to seed to new plant are the plant\'s <b>life cycle</b>.',
+  words: ['anther', 'carpel', 'filament', 'function', 'fruit', 'life cycle', 'ovary', 'petals', 'pollen', 'reproduce', 'scent', 'sepals', 'spores', 'stamen', 'stigma'],
+  games: [
+  { id: 'u1s1g1', title: 'Flower or no flower?', icon: '🌲', type: 'sort',
+    inst: 'Is it a flowering plant or a non-flowering plant? Tap the right basket.',
+    bins: [{ n: 'Flowering plant', i: '🌸', c: '#ff4d8d' }, { n: 'Non-flowering plant', i: '🌿', c: '#2e9e5b' }],
+    items: [
+      { e: '🫘', t: 'Bean plant', b: 0 }, { e: '🍑', t: 'Peach tree', b: 0 }, { e: '🌿', t: 'Fern', b: 1 }, { e: '🌲', t: 'Pine tree with cones', b: 1 },
+      { e: '🍅', t: 'Tomato plant', b: 0 }, { e: '🟩', t: 'Moss', b: 1 }, { e: '🪷', t: 'Lotus', b: 0 }, { e: '🧅', t: 'Onion', b: 0 },
+      { e: '🌾', t: 'Grass (it has small flowers)', b: 0 }, { e: '🌽', t: 'Corn', b: 0 } ] },
+
+  { id: 'u1s1g2', title: 'Spores, seeds and cones', icon: '🍂', type: 'quiz', items: [
+    { q: 'Plants without flowers are called…', o: ['non-flowering plants', 'flowering plants', 'seedlings', 'pollinators'], a: 0 },
+    { q: 'Ferns and mosses do not form seeds. Instead they make tiny…', o: ['spores', 'cones', 'fruits', 'petals'], a: 0 },
+    { q: 'A pine tree is a non-flowering plant, but it does make seeds. Where do its seeds form?', o: ['In a cone', 'In a flower', 'In a fruit', 'In its roots'], a: 0 },
+    { q: 'All flowers do the same important job. What is it?', o: ['They help the plant reproduce to form new plants', 'They make food for the plant', 'They take in water from the soil', 'They hold the plant up'], a: 0 },
+    { q: 'Which part of a flower stays behind on the plant and becomes the fruit?', o: ['The ovary', 'The petals', 'The sepals', 'The anthers'], a: 0 },
+    { q: 'Why don\'t we usually find flowers and fruits on a peach tree at the same time?', o: ['The flowers die first, then part of the flower becomes the fruit', 'Peach trees never have flowers', 'The fruits grow first, then the flowers', 'Insects eat all the flowers'], a: 0 } ] },
+
+  { id: 'u1s1g3', title: 'Bean plant life cycle', icon: '🔄', type: 'order', cycle: true,
+    inst: 'The stages of a bean plant\'s life cycle are mixed up. Tap them in the right order, starting with the seed.',
+    items: ['Seed', 'Seedling', 'Adult plant', 'Flower', 'Bean pod'],
+    after: { q: 'Why do we draw a life cycle in a circle?', o: ['Because it happens over and over again', 'Because seeds are round', 'Because it looks nice', 'Because the plant grows in a circle'], a: 0 } },
+
+  { id: 'u1s1g4', title: 'Label the flower', icon: '🏷️', type: 'label',
+    inst: 'Choose the name of each numbered part of the flower.',
+    svg: FLOWER_SVG,
+    labels: ['petal', 'sepal', 'anther', 'filament', 'stigma', 'ovary', 'eggs'],
+    extra: { q: 'The anther and filament together make the stamen. The stamen is the…', o: ['male part of the flower', 'female part of the flower', 'food store of the flower', 'stalk of the plant'], a: 0 } },
+
+  { id: 'u1s1g5', title: 'What does each part do?', icon: '🔗', type: 'match',
+    inst: 'Tap a flower part, then tap its job (function).',
+    pairs: [
+      ['Petals', 'Often brightly coloured to attract insects'],
+      ['Sepals', 'Little green leaves that protect the flower bud'],
+      ['Anther', 'Makes a powder called pollen'],
+      ['Filament', 'The stalk of the anther'],
+      ['Stigma', 'Sticky to catch pollen'],
+      ['Ovary', 'Contains tiny eggs'],
+      ['Stamen', 'The male part of the flower'],
+      ['Carpel', 'The female part of the flower'] ] },
+
+  { id: 'u1s1g6', title: 'Flower detective', icon: '🔍', type: 'quiz', items: [
+    { q: 'You gently touch the tips of the anthers. What do you notice on your fingers?', o: ['Powdery pollen', 'Sticky nectar', 'Water', 'Tiny eggs'], a: 0 },
+    { q: 'You touch the tip of the stigma. How does it feel?', o: ['Sticky', 'Dry and powdery', 'Hard like a seed', 'Hairy like a leaf'], a: 0 },
+    { q: 'Flowers have four main parts. How are they arranged?', o: ['In rings, one inside the other', 'In a straight line', 'All mixed up', 'One on top of the other'], a: 0 },
+    { q: 'Petals are often brightly coloured. Why?', o: ['To attract insects to the flower', 'To protect the flower bud', 'To make pollen', 'To catch pollen'], a: 0 },
+    { q: 'Most flowering plants have flowers with…', o: ['both male and female parts', 'only male parts', 'only female parts', 'no parts at all'], a: 0 },
+    { q: 'When a plant produces flowers, how long do the flowers usually last?', o: ['Only a few days', 'Many years', 'For ever', 'Only one minute'], a: 0 } ] }
+  ] },
+
+/* ---------- 1.2 ---------- */
+{ id: '1.2', title: 'Pollination, fruits and seeds', icon: '🐝', color: 'linear-gradient(135deg,#ff9f1c,#ffd23f)',
+  learn: '<b>Pollination</b> is the movement of pollen from the stamen of a flower to the stigma of the same kind of flower – by <b>insects</b> or by <b>wind</b>. Then pollen and eggs join in the ovary: this is <b>fertilisation</b>. The ovary grows into the <b>fruit</b> and seeds form inside.',
+  words: ['adaptation', 'adapted', 'fertilisation', 'fertilise', 'nectar', 'pollinate', 'pollination', 'pollinator'],
+  games: [
+  { id: 'u1s2g1', title: 'Busy bee', icon: '🐝', type: 'bee',
+    inst: 'Help the bee pollinate the flowers!' },
+
+  { id: 'u1s2g2', title: 'Insect or wind?', icon: '🌬️', type: 'sort',
+    inst: 'Is this a flower pollinated by insects or by wind? Tap the right basket.',
+    bins: [{ n: 'Insect pollinated', i: '🦋', c: '#ff4d8d' }, { n: 'Wind pollinated', i: '🌬️', c: '#3a86ff' }],
+    items: [
+      { e: '🎨', t: 'Bright, colourful petals', b: 0 }, { e: '👃', t: 'Has a scent', b: 0 }, { e: '🍯', t: 'Makes sweet nectar', b: 0 },
+      { e: '➡️', t: 'Marks on the petals guide the insect to the nectar', b: 0 }, { e: '🤏', t: 'Small petals, not brightly coloured', b: 1 },
+      { e: '🚫', t: 'No scent and no nectar', b: 1 }, { e: '💨', t: 'Lots of smooth, light pollen that blows away easily', b: 1 },
+      { e: '🌾', t: 'Grass flowers', b: 1 }, { e: '🍚', t: 'Rice flowers', b: 1 }, { e: '🌽', t: 'Corn flowers', b: 1 }, { e: '🌸', t: 'White petals', b: 0 } ] },
+
+  { id: 'u1s2g3', title: 'Pollen\'s journey', icon: '🛤️', type: 'order',
+    inst: 'Put the steps in the right order – from the bee\'s visit to the fruit.',
+    items: ['A bee flies into a flower to feed on nectar', 'The bee brushes against the anthers', 'Pollen grains stick to the bee\'s body', 'The bee carries the pollen to a stigma (pollination)', 'Pollen and egg join in the ovary (fertilisation)', 'The petals and stamens die', 'The ovary grows into a fruit with seeds inside'] },
+
+  { id: 'u1s2g4', title: 'Pollination or fertilisation?', icon: '⚖️', type: 'sort',
+    inst: 'Does the sentence describe pollination or fertilisation?',
+    bins: [{ n: 'Pollination', i: '🐝', c: '#ff9f1c' }, { n: 'Fertilisation', i: '🥚', c: '#7b2ff7' }],
+    items: [
+      { e: '➡️', t: 'Pollen moves from the anther to the stigma', b: 0 }, { e: '🌬️', t: 'Insects or wind carry the pollen', b: 0 },
+      { e: '🦋', t: 'A butterfly brushes pollen onto a stigma', b: 0 }, { e: '🤝', t: 'The pollen and the eggs join together', b: 1 },
+      { e: '🫛', t: 'It happens inside the ovary', b: 1 }, { e: '🌰', t: 'After it happens, seeds start to form', b: 1 } ] },
+
+  { id: 'u1s2g5', title: 'Pollination quiz', icon: '❓', type: 'quiz', items: [
+    { q: 'Why do flowers pollinated by insects have brightly coloured, scented petals and nectar?', o: ['To attract insects to the flower', 'To keep insects away', 'To help the wind blow the pollen', 'To protect the flower bud'], a: 0 },
+    { q: 'What do the petals of flowers pollinated by wind look like?', o: ['Small and not brightly coloured', 'Big and brightly coloured', 'White with marks to guide insects', 'Large with a strong scent'], a: 0 },
+    { q: 'Flowers pollinated by wind make lots of smooth, light pollen grains. Why?', o: ['So the pollen blows away easily', 'So that bees can eat it', 'So that it sticks to animals', 'So that it makes nectar'], a: 0 },
+    { q: 'Butterflies like to visit flowers that are…', o: ['big and have lots of nectar', 'small with no nectar', 'brown with no scent', 'pollinated by wind'], a: 0 },
+    { q: 'What is nectar?', o: ['A sweet liquid inside the flower', 'A powder made by the anther', 'A sticky part of the stigma', 'A tiny egg in the ovary'], a: 0 },
+    { q: 'How does pollination help the plant reproduce?', o: ['It brings pollen to the stigma, so the eggs can be fertilised and seeds can form', 'It makes the leaves grow bigger', 'It helps the roots take in water', 'It makes the plant flower again'], a: 0 },
+    { q: 'Fertilisation only happens if the pollen and the eggs are from…', o: ['the same kind of flower', 'any kind of flower', 'two different kinds of plant', 'a non-flowering plant'], a: 0 },
+    { q: 'Which part of the flower forms the fruit?', o: ['The ovary', 'The anther', 'The petals', 'The sepals'], a: 0 },
+    { q: 'What are the two jobs of the fruit?', o: ['To protect the seeds and help spread them', 'To make pollen and nectar', 'To attract insects and make scent', 'To take in water and light'], a: 0 } ] },
+
+  { id: 'u1s2g6', title: 'Pollination words', icon: '🔗', type: 'match',
+    inst: 'Tap a word, then tap what it means.',
+    pairs: [
+      ['Pollinators', 'Insects like bees and butterflies that carry pollen'],
+      ['Nectar', 'A sweet liquid inside the flower'],
+      ['Pollination', 'Pollen moves from the stamen to the stigma of the same kind of flower'],
+      ['Fertilisation', 'The pollen and eggs join to make seeds'],
+      ['Pollen grains', 'Stick to the insect\'s body when it brushes the anthers'],
+      ['Ovary', 'Where fertilisation happens; it grows into the fruit'] ] }
+  ] },
+
+/* ---------- 1.3 ---------- */
+{ id: '1.3', title: 'How seeds are spread', icon: '🌬️', color: 'linear-gradient(135deg,#2ec4b6,#3a86ff)',
+  learn: 'A <b>fruit</b> has two jobs: to protect the seeds and to help spread them. Plants spread their seeds away from themselves – this is <b>seed dispersal</b>. <b>Seedlings</b> need room, light and water to grow. Seeds are spread by <b>animals</b>, <b>wind</b>, <b>water</b>, by fruits that <b>split open or explode</b>, and by fruits that <b>drop and roll</b>.',
+  words: ['explode', 'seed dispersal', 'seedlings', 'spongy'],
+  games: [
+  { id: 'u1s3g1', title: 'How is it spread?', icon: '🧺', type: 'sort',
+    inst: 'How does this plant spread its seeds? Tap the right basket.',
+    bins: [{ n: 'Animals', i: '🐒', c: '#ff9f1c' }, { n: 'Wind', i: '🌬️', c: '#3a86ff' }, { n: 'Water', i: '🌊', c: '#2ec4b6' }, { n: 'Split / explode', i: '💥', c: '#ef476f' }, { n: 'Drop and roll', i: '🍎', c: '#7b2ff7' }],
+    items: [
+      { e: '🌼', t: 'Dandelion – a parachute of hairs', b: 1 }, { e: '🪽', t: 'Seed with thin papery wings', b: 1 }, { e: '🧂', t: 'Poppy – a "pepper pot" with holes', b: 1 },
+      { e: '🥥', t: 'Coconut – spongy covering', b: 2 }, { e: '✏️', t: 'Mangrove "sea pencils"', b: 2 }, { e: '🪷', t: 'Water lily – spongy covering', b: 2 },
+      { e: '🫛', t: 'Bean pod that dries out in hot weather', b: 3 }, { e: '🍎', t: 'Apple – falls from the tree', b: 4 },
+      { e: '🍅', t: 'Tomato eaten by a bird', b: 0 }, { e: '🦔', t: 'Seed with spines and hooks', b: 0 }, { e: '🐘', t: 'Seeds in an elephant\'s droppings', b: 0 } ] },
+
+  { id: 'u1s3g2', title: 'Seed key', icon: '🗝️', type: 'key',
+    inst: 'Use the key. Answer each question about the seed with Yes or No to find out how it is dispersed.' },
+
+  { id: 'u1s3g3', title: 'Seed spreading quiz', icon: '❓', type: 'quiz', items: [
+    { q: 'What do we call it when plants spread their seeds away from themselves?', o: ['Seed dispersal', 'Pollination', 'Fertilisation', 'Germination'], a: 0 },
+    { q: 'Why must seeds be spread away from the parent plant?', o: ['Seedlings need room, light and water to grow', 'Seeds do not like their parent plant', 'Seeds grow better in the dark', 'So that insects can find them'], a: 0 },
+    { q: 'Seeds in a tomato left on the plant, or seeds in a tomato eaten by a bird – which would grow better?', o: ['The ones eaten by the bird – they are dispersed away from the parent plant, where seedlings have room to grow', 'The ones left on the plant – they stay near the parent', 'Both grow the same', 'Neither will ever grow'], a: 0 },
+    { q: 'Fruits spread by animals are often…', o: ['colourful, soft, juicy and tasty', 'dry and very light', 'spongy so they float', 'hard pods that explode'], a: 0 },
+    { q: 'How do seeds that animals eat get spread?', o: ['They pass through the animal\'s body and come out in its droppings', 'The animal plants them with its hands', 'The wind blows them out of the animal', 'They float out of the animal\'s mouth'], a: 0 },
+    { q: 'A water lily seed has a spongy covering. How does this help?', o: ['It helps the seed float away on water', 'It makes the seed heavy', 'It helps the seed stick to fur', 'It helps the seed explode'], a: 0 },
+    { q: 'Why are bean pods usually picked before the weather gets hot and dry?', o: ['In hot weather the pods dry out and explode, shooting the seeds away', 'Hot weather makes them turn into flowers', 'Insects eat them when it is hot', 'They grow too big to pick'], a: 0 },
+    { q: 'Apple seeds are spread by drop and roll. How else can apple seeds be spread?', o: ['Animals eat the fallen apples and carry the seeds away', 'The wind blows the apples into the sky', 'The apples explode', 'The apples float in the sea like coconuts'], a: 0 },
+    { q: 'How can people disperse seeds?', o: ['Seeds with spines and hooks stick onto our clothes and fall off later', 'By watering a plant', 'By smelling a flower', 'By looking at a fruit'], a: 0 } ] },
+
+  { id: 'u1s3g4', title: 'Inside a fruit', icon: '🍊', type: 'match',
+    inst: 'Tap a word, then tap what it means.',
+    pairs: [
+      ['Fruit', 'The part of a flowering plant that contains the seeds'],
+      ['Skin', 'Usually on the outside of the fruit'],
+      ['Flesh', 'Around the seeds inside the fruit'],
+      ['Seedlings', 'Young plants that grow from seeds'],
+      ['Spongy', 'A covering that helps a fruit float'],
+      ['Ripe', 'When the fruit is ready and seed dispersal happens'] ] }
+  ] },
+
+/* ---------- 1.4 ---------- */
+{ id: '1.4', title: 'Seed germination', icon: '🌱', color: 'linear-gradient(135deg,#22b35e,#2ec4b6)',
+  learn: 'Inside a seed is a tiny plant and a <b>food store</b>. When a seed starts to grow we say it <b>germinates</b>. Germination starts when the seed <b>absorbs</b> water. The seed uses its food store for energy. Seeds need the right <b>conditions</b> – water and warmth – to germinate. After germination the seed <b>shrivels</b>.',
+  words: ['absorb', 'conditions', 'germination', 'shrivels'],
+  games: [
+  { id: 'u1s4g1', title: 'How a bean seed grows', icon: '🫘', type: 'order',
+    inst: 'Put the stages of germination of a bean seed in the right order.',
+    items: ['The seed absorbs water and swells', 'The seed coat splits', 'The first root starts to grow', 'The root grows down into the soil', 'Side roots grow', 'The first shoot starts to grow', 'The shoot grows up above the ground', 'The first leaves grow'] },
+
+  { id: 'u1s4g2', title: 'Germination words', icon: '🔗', type: 'match',
+    inst: 'Tap a word, then tap what it means.',
+    pairs: [
+      ['Germination', 'When a seed starts to grow'],
+      ['Absorb', 'Take in – the seed takes in water'],
+      ['Conditions', 'Things that affect how something happens'],
+      ['Food store', 'Gives the seed the energy to grow'],
+      ['Shrivels', 'The seed becomes small after germination'],
+      ['Seedlings', 'Young plants that grow from seeds'] ] },
+
+  { id: 'u1s4g3', title: 'Fair test questions', icon: '⚖️', type: 'quiz', items: [
+    { q: 'Part A: one jar has dry soil and one has moist soil. Which factor did you change?', o: ['Water (dry or moist soil)', 'Temperature', 'The number of seeds', 'The size of the jar'], a: 0 },
+    { q: 'Part B: one jar is in a cold place and one is in a warm place. Which factor did you change?', o: ['Temperature (cold or warm)', 'Water', 'The type of soil', 'The number of seeds'], a: 0 },
+    { q: 'What did you measure?', o: ['The number of seeds that germinated', 'The height of the jar', 'The colour of the soil', 'The amount of light'], a: 0 },
+    { q: 'In a fair test, which of these did you keep the same?', o: ['The number of seeds in each jar (five)', 'The water in Part A', 'The temperature in Part B', 'Nothing at all'], a: 0 },
+    { q: 'In Part A, where do you put the jar of dry soil and the jar of moist soil?', o: ['In the same place', 'One in a cold place, one in a warm place', 'One in the sun, one in a cupboard', 'Anywhere'], a: 0 },
+    { q: 'How often do you observe the seeds, and for how long?', o: ['Every two days for eight days', 'Once only', 'Every hour for one day', 'Every month for a year'], a: 0 },
+    { q: 'What is the best conclusion about the conditions seeds need?', o: ['Seeds need water and warmth to germinate', 'Seeds need dry soil to germinate', 'Seeds grow best in the cold', 'Seeds do not need water'], a: 0 } ] },
+
+  { id: 'u1s4g4', title: 'Seed facts', icon: '💡', type: 'quiz', items: [
+    { q: 'Seeds might look dead, but inside there is…', o: ['a tiny plant and a food store', 'only water', 'pollen and nectar', 'a tiny flower'], a: 0 },
+    { q: 'When does germination start?', o: ['When the seed takes in (absorbs) water', 'When the seed dries out', 'When the flower opens', 'When the leaves grow'], a: 0 },
+    { q: 'Where does the seed get the energy to grow?', o: ['From its food store', 'From the pollen', 'From the nectar', 'From its petals'], a: 0 },
+    { q: 'Which part of the new bean plant grows first?', o: ['The root', 'The leaves', 'The flower', 'The shoot'], a: 0 },
+    { q: 'In which direction does the root grow?', o: ['Downwards into the soil', 'Upwards into the air', 'Sideways only', 'It does not grow'], a: 0 },
+    { q: 'In which direction does the shoot grow?', o: ['Upwards, above the ground', 'Downwards into the soil', 'Sideways only', 'It does not grow'], a: 0 },
+    { q: 'What happens to the seed after germination?', o: ['It shrivels and becomes small', 'It becomes bigger and harder', 'It turns into a flower', 'It explodes'], a: 0 },
+    { q: 'Can seeds live without germinating for years?', o: ['Yes – until the conditions become suitable', 'No – they die after one day', 'No – they must grow straight away', 'Only in the sea'], a: 0 },
+    { q: 'The oldest seed known to germinate came from a lotus flower in China. How old was it?', o: ['1300 years old', '13 years old', '130 years old', '13 000 years old'], a: 0 } ] }
+  ] },
+
+/* ---------- Project ---------- */
+{ id: 'P', title: 'Project: Pollinators and pesticides', icon: '🐞', color: 'linear-gradient(135deg,#ef476f,#7b2ff7)',
+  learn: '<b>Honeybees</b> are important pollinators – 80% of the plants we eat are pollinated by bees. Farmers use <b>pesticides</b> to get rid of pests, but pesticides also harm pollinators. We should use pesticides only when needed, and <b>not</b> when the plants are flowering.',
+  words: ['pollinator', 'pesticide', 'pests'],
+  games: [
+  { id: 'u1sPg1', title: 'Save the bees!', icon: '🐝', type: 'quiz', items: [
+    { q: 'What is a pesticide?', o: ['A chemical used to get rid of pests', 'A type of flower', 'Food for bees', 'A kind of fruit'], a: 0 },
+    { q: 'About how many of the plants we eat are pollinated by bees?', o: ['80%', '8%', '20%', '100%'], a: 0 },
+    { q: 'Bees are pollinators. Which of these are also pollinators?', o: ['Butterflies and birds', 'Snails and worms', 'Rocks and soil', 'Fish and frogs'], a: 0 },
+    { q: 'Why do farmers and gardeners use pesticides?', o: ['To kill pests that eat their plants', 'To help the bees', 'To make flowers smell nice', 'To water the plants'], a: 0 },
+    { q: 'How do bees take in pesticides?', o: ['With the nectar and pollen they collect from sprayed flowers', 'By drinking rain water', 'From the air in their hive', 'They never take them in'], a: 0 },
+    { q: 'How can pesticides harm bees?', o: ['Some kill bees; others make it hard for bees to fly and find their hive, or make them have fewer young', 'They give bees more nectar', 'They make bees bigger', 'They do not harm bees'], a: 0 },
+    { q: 'Pesticides on seeds can also harm bees. Why?', o: ['When the seed grows, the pesticide spreads to the whole plant, including the pollen and nectar', 'Bees eat the seeds', 'The seeds explode onto the bees', 'The wind blows seeds at the bees'], a: 0 },
+    { q: 'Why should people not use pesticides when plants are flowering?', o: ['Bees visit the flowers and take in the pesticide', 'Flowers will close up', 'The pesticide will turn into pollen', 'The wind will stop'], a: 0 },
+    { q: 'Which type of pesticide seems to be more harmful to bees?', o: ['Powder pesticides sprinkled on plants or soil', 'Liquid spray pesticides', 'Water', 'Compost'], a: 0 },
+    { q: 'Bees pollinate the flowers of many food plants. Which group is named in the book?', o: ['Onions, apples, potatoes and beans', 'Grass, rice and corn', 'Ferns and mosses', 'Pine trees'], a: 0 },
+    { q: 'How can we help pollinators?', o: ['Try not to use pesticides in and around our home', 'Use more powder pesticides', 'Spray pesticides on flowers', 'Kill all insects'], a: 0 } ] }
+  ] },
+
+/* ---------- Check your progress ---------- */
+{ id: 'C', title: 'Check your progress', icon: '🏆', color: 'linear-gradient(135deg,#7b2ff7,#3a86ff)',
+  learn: 'Show what you know about the whole unit: <b>life cycles</b>, <b>flower parts</b>, <b>pollination</b>, <b>seed dispersal</b> and <b>germination</b>.',
+  words: [],
+  games: [
+  { id: 'u1sCg1', title: 'Plant life cycle', icon: '🔄', type: 'order', cycle: true,
+    inst: 'Arrange these processes in the correct order to make a life cycle for a plant. Start with pollination.',
+    items: ['Pollination', 'Fertilisation', 'Fruit and seed formation', 'Seed dispersal', 'Germination'] },
+
+  { id: 'u1sCg2', title: 'Flowers and seeds', icon: '🌺', type: 'quiz', items: [
+    { q: 'How is a fern plant different to a tomato plant?', o: ['A fern has no flowers and makes spores, not seeds', 'A fern has bigger flowers', 'A fern makes fruits with seeds', 'A fern is pollinated by bees'], a: 0 },
+    { q: 'Which part of the flower forms the seeds?', o: ['The ovary (with its eggs)', 'The petals', 'The anther', 'The sepals'], a: 0 },
+    { q: 'Name the process by which the seeds are formed.', o: ['Fertilisation', 'Germination', 'Seed dispersal', 'Evaporation'], a: 0 },
+    { q: 'Where does fertilisation take place?', o: ['In the ovary', 'In the anther', 'On the petals', 'In the soil'], a: 0 },
+    { q: 'What is pollination?', o: ['The movement of pollen from the stamen to the stigma of the same kind of flower', 'When a seed starts to grow', 'When the pollen and eggs join', 'When fruits spread their seeds'], a: 0 },
+    { q: 'A flower has big, bright petals, a scent and nectar. How is it pollinated?', o: ['By insects', 'By wind', 'By water', 'It is not pollinated'], a: 0 },
+    { q: 'What is the process called when plants spread their seeds?', o: ['Seed dispersal', 'Pollination', 'Germination', 'Fertilisation'], a: 0 },
+    { q: 'Which shows two ways that seeds can be adapted to be spread by animals?', o: ['Hooks or spines; colourful, juicy, tasty fruit', 'Papery wings; a parachute of hairs', 'A spongy covering; floating', 'Drying out; exploding'], a: 0 } ] },
+
+  { id: 'u1sCg3', title: 'Germination sentences', icon: '✍️', type: 'fill',
+    inst: 'Choose the correct word for each gap.',
+    words: ['absorbs', 'swells', 'food store', 'root', 'downwards', 'shoot', 'upwards', 'warmth', 'air'],
+    text: [
+      'When a seed starts to germinate it [absorbs] water and [swells].',
+      'The seed gets energy from its [food store].',
+      'The [root] is the first part of the new plant that starts to grow. It grows [downwards].',
+      'The [shoot] grows next. It grows [upwards].',
+      'Seeds need water and [warmth|air] to germinate.' ] },
+
+  { id: 'u1sCg4', title: 'Junaid\'s results', icon: '📊', type: 'quiz', items: [
+    { html: '<div class="note">Junaid\'s class germinated seeds under different conditions.</div><table class="res"><tr><th>Conditions</th><th>Number of seeds germinated</th></tr><tr><td>Warm, light</td><td>10</td></tr><tr><td>Warm, dark</td><td>15</td></tr><tr><td>Cold, light</td><td>5</td></tr><tr><td>Cold, dark</td><td>7</td></tr></table>',
+      q: 'Which conditions are best for germination?', o: ['Warm, dark', 'Warm, light', 'Cold, light', 'Cold, dark'], a: 0 },
+    { html: '<table class="res"><tr><th>Conditions</th><th>Number of seeds germinated</th></tr><tr><td>Warm, light</td><td>10</td></tr><tr><td>Warm, dark</td><td>15</td></tr><tr><td>Cold, light</td><td>5</td></tr><tr><td>Cold, dark</td><td>7</td></tr></table>',
+      q: 'Do seeds need light for germination?', o: ['No – more seeds germinated in the dark than in the light', 'Yes – no seeds germinated in the dark', 'Yes – light is the most important condition', 'We cannot tell'], a: 0 },
+    { q: 'Did the seeds get water? How do you know?', o: ['Yes – seeds germinated, and seeds need water to germinate', 'No – seeds do not need water', 'No – the jars were dry', 'We cannot know'], a: 0 },
+    { q: 'Which conditions gave the fewest germinated seeds?', o: ['Cold, light', 'Cold, dark', 'Warm, light', 'Warm, dark'], a: 0 },
+    { html: '<div class="note">Which bar chart shows Junaid\'s results correctly?</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><b>A</b>' + barChart(['Warm|light', 'Warm|dark', 'Cold|light', 'Cold|dark'], [10, 15, 5, 7], { max: 15, step: 5 }) + '</div><div><b>B</b>' + barChart(['Warm|light', 'Warm|dark', 'Cold|light', 'Cold|dark'], [15, 10, 7, 5], { max: 15, step: 5 }) + '</div></div>',
+      q: 'Choose the correct graph.', o: ['Graph A', 'Graph B'], a: 0, fixed: true } ] }
+  ] }
+] },
+{ id: 2, title: 'Sound', icon: '🔊', color: 'linear-gradient(135deg,#3a86ff,#7b2ff7)', sections: [
+
+/* ---------- 2.1 ---------- */
+{ id: '2.1', title: 'How are sounds made?', icon: '🥁', color: 'linear-gradient(135deg,#3a86ff,#2ec4b6)',
+  learn: 'Sounds are made when things <b>vibrate</b>. A <b>vibration</b> is a very quick movement back and forth. You often cannot see vibrations, but you can feel them. Sound travels because <b>vibrations travel</b> – through air, glass and plastic wrap. As sound travels further from a source it becomes <b>fainter</b>. Sound travels best through <b>solids</b>.',
+  words: ['control variable', 'dependent variable', 'independent variable', 'pluck', 'vibrate', 'vibration'],
+  games: [
+  { id: 'u2s1g1', title: 'Jumping rice', icon: '🍚', type: 'rice',
+    inst: 'Plastic wrap is held over a jar with an elastic band. Rice grains are sprinkled on top. Try each way of making a sound!' },
+
+  { id: 'u2s1g2', title: 'How the vibrations travel', icon: '🔀', type: 'order',
+    inst: 'Why did the rice grains move? Put the steps in the right order.',
+    items: ['The jar vibrates when I hit it', 'The vibrations travel through the jar to the plastic wrap', 'The plastic wrap vibrates. The rice grains vibrate and move', 'I can see the rice grains move'] },
+
+  { id: 'u2s1g3', title: 'The tin tray', icon: '🥘', type: 'fill',
+    inst: 'Explain why the rice grains jumped when you hit the tin tray. Choose the correct word for each gap.',
+    words: ['vibrations', 'plastic wrap', 'air', 'rice grains', 'vibrates', 'travel'],
+    text: [
+      'The [vibrations] travel from the tin tray to the [air].',
+      'The air [vibrates] and makes the [plastic wrap] vibrate.',
+      'The vibrations [travel] from the plastic wrap to the rice grains.',
+      'We see the [rice grains] jump.' ] },
+
+  { id: 'u2s1g4', title: 'Vibrations quiz', icon: '〰️', type: 'quiz', items: [
+    { q: 'What is a vibration?', o: ['A very quick movement back and forth', 'A very slow movement in a circle', 'A loud noise', 'A kind of musical instrument'], a: 0 },
+    { q: 'How are sounds made?', o: ['When things vibrate', 'When things are cold', 'When things are still', 'When things change colour'], a: 0 },
+    { q: 'Hold your hand on your throat and hum a tune. What do you notice?', o: ['You feel the vibrations and hear the sound', 'You feel nothing at all', 'Your throat gets cold', 'You see the sound'], a: 0 },
+    { q: 'You can see these vibrate when you pluck them:', o: ['Guitar strings', 'Rice grains in a bag', 'A glass jar on a shelf', 'A closed book'], a: 0 },
+    { q: 'As sound travels further from a source it becomes…', o: ['fainter', 'stronger', 'faster', 'higher'], a: 0 },
+    { q: 'We hear a bird singing. What do we hear the bird song with?', o: ['Our ears', 'Our eyes', 'Our hands', 'Our nose'], a: 0 },
+    { q: 'Which is true?', o: ['Sound vibrations can travel through air, glass and plastic wrap', 'Sound only travels through air', 'Sound cannot travel through glass', 'Sound cannot travel at all'], a: 0 } ] },
+
+  { id: 'u2s1g5', title: 'Fair test: which material?', icon: '🧪', type: 'quiz', items: [
+    { html: '<div class="note">You test how well sound travels through different materials: air (a gas), at least one liquid and at least one solid.</div>',
+      q: 'The source of sound (a buzzer, a bell or a ticking clock) stays the same throughout. This is the…', o: ['control variable', 'independent variable', 'dependent variable'], a: 0, fixed: true },
+    { q: 'The materials you change (air, a liquid, a solid) are the…', o: ['independent variables', 'control variable', 'dependent variable'], a: 0, fixed: true },
+    { q: 'The loudness of the sound – the variable that you measure – is the…', o: ['dependent variable', 'control variable', 'independent variable'], a: 0, fixed: true },
+    { q: 'How do you show how loud the sound was in your table?', o: ['✓ = quiet, ✓✓ = loud, ✓✓✓ = very loud', '✗ = loud, ✓ = quiet', 'Colour the box red', 'Write the time'], a: 0 },
+    { q: 'Why do you repeat your test on each material?', o: ['To get more accurate results', 'To make the sound louder', 'To change the source of sound', 'To finish faster'], a: 0 },
+    { q: 'Air is a…', o: ['gas', 'liquid', 'solid'], a: 0, fixed: true },
+    { q: 'Sound travels best through…', o: ['solids', 'gases', 'liquids'], a: 0, fixed: true } ] }
+  ] },
+
+/* ---------- 2.2 ---------- */
+{ id: '2.2', title: 'Volume and pitch', icon: '🎚️', color: 'linear-gradient(135deg,#7b2ff7,#ff4d8d)',
+  learn: 'The <b>volume</b> of a sound is how loud or quiet it is. A sound is louder when the vibrations are <b>bigger</b>. We measure volume in <b>decibels (dB)</b> with a <b>sound level meter</b>. Sounds louder than 85 dB can damage our ears. <b>Pitch</b> is how high or low a sound is. <b>Fast</b> vibrations make a higher-pitched sound; <b>slow</b> vibrations make a lower-pitched sound.',
+  words: ['decibel (dB)', 'high-pitched', 'low-pitched', 'sound level meter', 'volume'],
+  games: [
+  { id: 'u2s2g1', title: 'Vibration machine', icon: '🌊', type: 'wave',
+    inst: 'Choose the size and the speed of the vibrations to make each sound. Press ▶ to listen.' },
+
+  { id: 'u2s2g2', title: 'Quietest to loudest', icon: '📈', type: 'order',
+    inst: 'Put these everyday sounds in order from the quietest to the loudest.',
+    items: ['🤫 Whispering (20 dB)', '🗣️ Talking (60 dB)', '🧹 Vacuum cleaner (70 dB)', '🚗 Car (80 dB)', '🌱 Lawnmower (100 dB)', '👶 Baby crying (110 dB)', '🚀 Rocket (220 dB)'] },
+
+  { id: 'u2s2g3', title: 'How many decibels?', icon: '🔢', type: 'match',
+    inst: 'Tap a sound, then tap its volume from the book\'s chart.',
+    pairs: [['🤫 Whispering', '20 dB'], ['🗣️ Talking', '60 dB'], ['🧹 Vacuum cleaner', '70 dB'], ['🚗 Car', '80 dB'], ['🌱 Lawnmower', '100 dB'], ['👶 Baby crying', '110 dB'], ['✈️ Aeroplane', '120 dB'], ['🚀 Rocket', '220 dB']] },
+
+  { id: 'u2s2g4', title: 'Safe or harmful?', icon: '🦻', type: 'sort',
+    inst: 'Very loud sounds (louder than 85 dB) can damage our ears. Sort each sound.',
+    bins: [{ n: 'Not louder than 85 dB', i: '🙂', c: '#22b35e' }, { n: 'Louder than 85 dB – can damage our ears', i: '⚠️', c: '#ef476f' }],
+    items: [
+      { e: '🤫', t: 'Whispering – 20 dB', b: 0 }, { e: '🗣️', t: 'Talking – 60 dB', b: 0 }, { e: '🧹', t: 'Vacuum cleaner – 70 dB', b: 0 }, { e: '🚗', t: 'Car – 80 dB', b: 0 },
+      { e: '🌱', t: 'Lawnmower – 100 dB', b: 1 }, { e: '👶', t: 'Baby crying – 110 dB', b: 1 }, { e: '✈️', t: 'Aeroplane – 120 dB', b: 1 }, { e: '⛈️', t: 'Thunder – 120 dB', b: 1 }, { e: '🚀', t: 'Rocket – 220 dB', b: 1 } ] },
+
+  { id: 'u2s2g5', title: 'High or low?', icon: '🎵', type: 'sort',
+    inst: 'Is it high-pitched or low-pitched?',
+    bins: [{ n: 'High-pitched', i: '🔼', c: '#ff9f1c' }, { n: 'Low-pitched', i: '🔽', c: '#3a86ff' }],
+    items: [
+      { e: '😗', t: 'A whistle', b: 0 }, { e: '⛈️', t: 'Thunder', b: 1 }, { e: '🦇', t: 'Bats – sounds too high for us to hear', b: 0 },
+      { e: '🐘', t: 'Elephants – sounds too low for us to hear', b: 1 }, { e: '⚡', t: 'Fast vibrations', b: 0 }, { e: '🐢', t: 'Slow vibrations', b: 1 } ] },
+
+  { id: 'u2s2g6', title: 'Volume and pitch quiz', icon: '❓', type: 'quiz', items: [
+    { q: 'What is the volume of a sound?', o: ['How loud or quiet it is', 'How high or low it is', 'How fast it travels', 'How long it lasts'], a: 0 },
+    { q: 'What is pitch?', o: ['How high or low a sound is', 'How loud or quiet a sound is', 'The unit for measuring sound', 'A kind of vibration you can see'], a: 0 },
+    { q: 'What unit do we use to measure sound?', o: ['The decibel (dB)', 'The metre (m)', 'The kilogram (kg)', 'The degree (°C)'], a: 0 },
+    { q: 'What do we use to measure the volume of sound?', o: ['A sound level meter', 'A loudspeaker', 'A ruler', 'A thermometer'], a: 0 },
+    { q: 'A sound is louder when the vibrations are…', o: ['bigger', 'smaller', 'slower', 'fewer'], a: 0 },
+    { q: 'If the singers sing quietly, how will the vibrations change?', o: ['They will be smaller', 'They will be bigger', 'They will stop', 'They will be slower'], a: 0 },
+    { q: 'If the singers have to sing higher notes, how will the vibrations change?', o: ['They will be faster', 'They will be slower', 'They will be bigger', 'They will stop'], a: 0 },
+    { q: 'Some singers make loud, low-pitched sounds. Describe the vibrations.', o: ['Big and slow', 'Small and fast', 'Small and slow', 'Big and fast'], a: 0 },
+    { q: 'Elephants can hear each other\'s very low-pitched sounds up to how far away?', o: ['7.5 kilometres', '75 metres', '7.5 metres', '750 kilometres'], a: 0 } ] }
+  ] },
+
+/* ---------- 2.3 ---------- */
+{ id: '2.3', title: 'Changing the volume of sound', icon: '🔇', color: 'linear-gradient(135deg,#ff9f1c,#ef476f)',
+  learn: 'A <b>microphone</b>, an <b>amplifier</b> and a <b>loudspeaker</b> make a sound system that makes sound louder. Too much noise is <b>noise pollution</b>. The best solution is to reduce the volume; if we can\'t, we can <b>muffle</b> sounds – make them quieter – with <b>ear defenders</b>, carpets, curtains and <b>silencers</b>.',
+  words: ['microphone', 'amplifier', 'loudspeaker', 'muffle', 'ear defenders', 'silencer'],
+  games: [
+  { id: 'u2s3g1', title: 'The sound system', icon: '🎤', type: 'match',
+    inst: 'Tap a word, then tap what it does.',
+    pairs: [
+      ['Microphone', 'The singer sings into it'],
+      ['Amplifier', 'Makes the sound louder'],
+      ['Loudspeaker', 'The sound comes out through it'],
+      ['Sound system', 'Microphone + amplifier + loudspeaker together'],
+      ['Ear defenders', 'Muffle sound to protect the ears of people in noisy places'],
+      ['Silencer', 'Fitted to cars, trucks and motorbikes to muffle engine sounds'] ] },
+
+  { id: 'u2s3g2', title: 'Louder or quieter?', icon: '🔊', type: 'sort',
+    inst: 'Does it make sound louder, or does it muffle sound (make it quieter)?',
+    bins: [{ n: 'Makes sound louder', i: '🔊', c: '#ff9f1c' }, { n: 'Muffles sound', i: '🔇', c: '#3a86ff' }],
+    items: [
+      { e: '🎛️', t: 'An amplifier', b: 0 }, { e: '📻', t: 'A sound system', b: 0 }, { e: '🎧', t: 'Ear defenders', b: 1 },
+      { e: '🟫', t: 'Carpets in a building', b: 1 }, { e: '🪟', t: 'Curtains', b: 1 }, { e: '🏍️', t: 'A silencer on a motorbike', b: 1 },
+      { e: '🧱', t: 'Material that fills the spaces between walls', b: 1 } ] },
+
+  { id: 'u2s3g3', title: 'Muffling investigation', icon: '📦', type: 'order',
+    inst: 'Find out which material muffles sound best. Put the steps in order.',
+    items: ['Predict which material will muffle sound the best', 'Place the sound source in the box', 'Pack one of the materials around the sound source', 'Place the lid on the box', 'Stand about one metre away and listen – is the sound loud or quiet?', 'Repeat the activity with the other materials', 'Present your results in a table'] },
+
+  { id: 'u2s3g4', title: 'Name the variable', icon: '🏷️', type: 'sort',
+    inst: 'In the muffling investigation, which kind of variable is each one?',
+    bins: [{ n: 'Control (kept the same)', i: '🔒', c: '#7b2ff7' }, { n: 'Independent (you change it)', i: '🔄', c: '#ff9f1c' }, { n: 'Dependent (you measure it)', i: '📏', c: '#2ec4b6' }],
+    items: [
+      { e: '⏰', t: 'The source of sound in the box', b: 0 }, { e: '📏', t: 'Standing about one metre away each time', b: 0 }, { e: '📦', t: 'The same shoe box with lid', b: 0 },
+      { e: '📰', t: 'The muffling material: newspaper, bubble wrap or a blanket', b: 1 }, { e: '🔊', t: 'How loud the sound is (the volume)', b: 2 } ] },
+
+  { id: 'u2s3g5', title: 'Noise pollution', icon: '🚧', type: 'quiz', items: [
+    { q: 'What is noise pollution?', o: ['Far too much noise, like traffic, horns and road repairs', 'A very quiet place', 'Music played softly', 'Birds singing in a park'], a: 0 },
+    { q: 'What effect does noise pollution have on our environment?', o: ['A negative effect', 'A positive effect', 'No effect', 'It makes the air cleaner'], a: 0 },
+    { q: 'What is the best solution to noise pollution?', o: ['Reduce the volume of noise', 'Make the noise louder', 'Use an amplifier', 'Add more loudspeakers'], a: 0 },
+    { q: 'What does muffle mean?', o: ['Make sounds quieter', 'Make sounds louder', 'Make sounds higher', 'Record sounds'], a: 0 },
+    { q: 'Why do some people who work in very noisy places wear ear defenders?', o: ['Loud sounds can hurt our ears', 'To keep warm', 'To hear the noise better', 'To make the noise louder'], a: 0 },
+    { q: 'In the picture, workers cover the walls with material. Why?', o: ['To muffle the sound', 'To make the sound louder', 'To make the room brighter', 'To make the walls stronger'], a: 0 },
+    { q: 'The singer\'s voice in a sound system is made louder by the…', o: ['amplifier', 'microphone stand', 'curtains', 'silencer'], a: 0 } ] }
+  ] },
+
+/* ---------- 2.4 ---------- */
+{ id: '2.4', title: 'Changing the pitch of sound', icon: '🎸', color: 'linear-gradient(135deg,#22b35e,#3a86ff)',
+  learn: 'A guitar is a <b>stringed instrument</b>. You can <b>tune</b> it with the pegs by making the strings looser or tighter. Thick and thin strings, tight and loose strings, and pressing the strings down change the pitch. A <b>wind instrument</b> makes the air inside a pipe vibrate. Blocking holes makes the column of air shorter or longer, which changes the pitch.',
+  words: ['loosen', 'stringed instrument', 'tighten', 'tune', 'wind instrument'],
+  games: [
+  { id: 'u2s4g1', title: 'Play the guitar', icon: '🎸', type: 'guitar',
+    inst: 'Tap a string to pluck it. Listen to the pitch!' },
+
+  { id: 'u2s4g2', title: 'Bottle music', icon: '🍾', type: 'bottles',
+    inst: 'Eight bottles of the same size with different amounts of water. Tap a bottle to blow across the top.' },
+
+  { id: 'u2s4g3', title: 'Pitch sentences', icon: '✍️', type: 'fill',
+    inst: 'Complete the sentences.',
+    words: ['higher-pitched', 'lower-pitched', 'lower', 'higher', 'pitch', 'faster', 'slower'],
+    text: [
+      'The more tightly stretched the string, the [higher-pitched] the note.',
+      'The thicker the string, the [lower-pitched] the note.',
+      'The [lower] the level of the water, the longer the column of air in the bottle and the lower the [pitch] of the sound.',
+      'The longer the column of air, the [slower] the vibrations and the [lower] the pitch of the sound.' ] },
+
+  { id: 'u2s4g4', title: 'Instruments quiz', icon: '🎺', type: 'quiz', items: [
+    { q: 'How do people make music from wind instruments?', o: ['By blowing down or across the tops of hollow pipes', 'By plucking strings', 'By hitting them with a stick', 'By turning pegs'], a: 0 },
+    { q: 'What vibrates inside a wind instrument to make a sound?', o: ['The air inside the pipe', 'The strings', 'The pegs', 'The player\'s fingers'], a: 0 },
+    { q: 'How do you change the pitch of a wind instrument?', o: ['Block one or more holes so the column of air is shorter or longer', 'Turn the pegs', 'Pluck it harder', 'Paint the pipe'], a: 0 },
+    { q: 'What are the pegs on a stringed instrument used for?', o: ['To tune it by making the strings looser or tighter', 'To hold the instrument', 'To blow into', 'To make it louder'], a: 0 },
+    { q: 'What does music sound like when the instrument is out of tune?', o: ['Horrible', 'Perfect', 'Louder', 'Silent'], a: 0 },
+    { q: 'How does the boy playing the violin change the pitch?', o: ['By pressing the strings', 'By blowing into it', 'By hitting it', 'By turning it upside down'], a: 0 },
+    { q: 'Are the vibrations faster or slower when you tighten a string?', o: ['Faster', 'Slower'], a: 0, fixed: true },
+    { q: 'Are the vibrations faster or slower when you pluck a thinner string?', o: ['Faster', 'Slower'], a: 0, fixed: true } ] }
+  ] },
+
+/* ---------- Project ---------- */
+{ id: 'P', title: 'Project: Noise in my community', icon: '🏙️', color: 'linear-gradient(135deg,#ef476f,#ff9f1c)',
+  learn: 'One of the negative effects of science and technology is loud sounds or <b>noise</b>. Machinery, traffic and airports all make a lot of noise. People get stressed and can\'t sleep properly when there is loud noise.',
+  words: ['noise', 'dot plot', 'community'],
+  games: [
+  { id: 'u2sPg1', title: 'Noise detectives', icon: '🕵️', type: 'quiz', items: [
+    { q: 'What is one of the negative effects of science and technology?', o: ['Loud sounds or noise', 'Clean air', 'Quiet streets', 'More birds singing'], a: 0 },
+    { q: 'Which of these make a lot of noise?', o: ['Machinery, traffic and airports', 'Books, pencils and paper', 'Flowers and trees', 'Carpets and curtains'], a: 0 },
+    { q: 'How can loud noise affect people?', o: ['They get stressed and can\'t sleep properly', 'They sleep better', 'They hear better', 'It has no effect'], a: 0 },
+    { q: 'Which list shows sources of loud noise in a community?', o: ['Traffic, building sites, roadworks, an airport, factories, tractors', 'Whispering, reading, sleeping', 'Curtains, carpets, ear defenders', 'Clouds, rain, wind'], a: 0 },
+    { q: 'At least how many people should you interview?', o: ['20', '2', '5', '200'], a: 0 },
+    { q: 'How should you present your results?', o: ['In a dot plot', 'In a life cycle', 'In a song', 'In a map of the stars'], a: 0 },
+    { q: 'After the interviews, what do you find out about two noise sources that disturb people the most?', o: ['If anything is being done in the community to reduce this noise', 'How to make them louder', 'What colour they are', 'Nothing'], a: 0 } ] }
+  ] },
+
+/* ---------- Check your progress ---------- */
+{ id: 'C', title: 'Check your progress', icon: '🏆', color: 'linear-gradient(135deg,#7b2ff7,#3a86ff)',
+  learn: 'Show what you know about <b>vibrations</b>, <b>volume</b>, <b>pitch</b>, <b>muffling</b> and <b>musical instruments</b>.',
+  words: [],
+  games: [
+  { id: 'u2sCg1', title: 'True or false?', icon: '✅', type: 'sort',
+    inst: 'Is each statement true or false?',
+    bins: [{ n: 'True', i: '✅', c: '#22b35e' }, { n: 'False', i: '❌', c: '#ef476f' }],
+    items: [
+      { e: 'a', t: 'You measure the volume of sound with a loudspeaker.', b: 1 }, { e: 'b', t: 'You play a guitar by plucking the strings.', b: 0 },
+      { e: 'c', t: 'Low sounds are caused by slow vibrations.', b: 0 }, { e: 'd', t: 'Sound only travels through air.', b: 1 },
+      { e: 'e', t: 'Soft materials are better than hard materials for muffling sound.', b: 0 }, { e: 'f', t: 'Sound travels best through solids.', b: 0 },
+      { e: 'g', t: 'Loud sounds are caused by fast vibrations.', b: 1 } ] },
+
+  { id: 'u2sCg2', title: 'Instruments A, B and C', icon: '🎼', type: 'quiz', items: [
+    { html: INSTR_SVG, q: 'Which instrument can you play by plucking?', o: ['A', 'B', 'C'], a: 2, fixed: true },
+    { html: INSTR_SVG, q: 'Which instrument can you play by hitting?', o: ['A', 'B', 'C'], a: 0, fixed: true },
+    { html: INSTR_SVG, q: 'Which instrument can you play by blowing?', o: ['A', 'B', 'C'], a: 1, fixed: true },
+    { html: INSTR_SVG, q: 'How can you make a higher-pitched note with instrument B?', o: ['Block holes so the column of air inside the pipe is shorter', 'Make the column of air longer', 'Pluck it', 'Hit it harder'], a: 0 },
+    { html: INSTR_SVG, q: 'How can you make a higher-pitched note with instrument C?', o: ['Pluck a thinner or tighter string', 'Pluck a thicker string', 'Loosen the strings', 'Blow into it'], a: 0 },
+    { q: 'What instrument could you use to measure the volume of sound these instruments make?', o: ['A sound level meter', 'A loudspeaker', 'A microphone', 'An amplifier'], a: 0 },
+    { q: 'What unit is sound measured in?', o: ['Decibels (dB)', 'Metres', 'Kilograms', 'Litres'], a: 0 } ] },
+
+  { id: 'u2sCg3', title: 'Describe the sound', icon: '👂', type: 'quiz', items: [
+    { q: 'A whisper is…', o: ['quiet', 'loud'], a: 0, fixed: true },
+    { q: 'A bird singing is…', o: ['high', 'low'], a: 0, fixed: true },
+    { q: 'A cow mooing is…', o: ['low', 'high'], a: 0, fixed: true },
+    { q: 'An ambulance siren is…', o: ['loud', 'quiet'], a: 0, fixed: true } ] },
+
+  { id: 'u2sCg4', title: 'Zara and Sofia\'s test', icon: '⏰', type: 'quiz', items: [
+    { html: JARS3_SVG, q: 'Which container is full of gas (air)?', o: ['A', 'B', 'C'], a: 1, fixed: true },
+    { html: JARS3_SVG, q: 'Which container contains a liquid?', o: ['A', 'B', 'C'], a: 0, fixed: true },
+    { html: JARS3_SVG, q: 'Which container contains a solid?', o: ['A', 'B', 'C'], a: 2, fixed: true },
+    { q: 'The clock (the source of sound) stays the same. This is the…', o: ['control variable', 'independent variable', 'dependent variable'], a: 0, fixed: true },
+    { q: 'They change what is in the container (solid, liquid or gas). This is the…', o: ['independent variable', 'control variable', 'dependent variable'], a: 0, fixed: true },
+    { q: 'They measure how loud the sound is. This is the…', o: ['dependent variable', 'control variable', 'independent variable'], a: 0, fixed: true },
+    { q: 'Why does each container have to be the same size?', o: ['To make it a fair test – only the material changes', 'So they look nice', 'So the clock fits', 'To make the sound louder'], a: 0 },
+    { q: 'What conclusion will they reach?', o: ['Sound travels best through solids', 'Sound travels best through gases', 'Sound only travels through air', 'Sound cannot travel through liquids'], a: 0 } ] }
+  ] }
+] },
+{ id: 3, title: 'States and properties of matter', icon: '💧', color: 'linear-gradient(135deg,#2ec4b6,#3a86ff)', sections: [
+
+/* ---------- 3.1 ---------- */
+{ id: '3.1', title: 'Gases', icon: '🎈', color: 'linear-gradient(135deg,#3a86ff,#7b2ff7)',
+  learn: 'Gases are all around us – air, gas in fizzy drinks and in tyres. Most gases are <b>invisible</b>. The <b>particle model</b> describes the structure of solids, liquids and gases. Air is a mixture of gases: <b>nitrogen</b> (about four-fifths), <b>oxygen</b>, <b>carbon dioxide</b> and <b>water vapour</b>. The layer of air around the Earth is the <b>atmosphere</b>. Smoke, dust and gases cause <b>air pollution</b>.',
+  words: ['atmosphere', 'compressed', 'invisible', 'layer', 'pollute', 'pollution', 'properties', 'structure'],
+  games: [
+  { id: 'u3s1g1', title: 'Particle detective', icon: '🔬', type: 'particles',
+    inst: 'Watch the particles. Is it a solid, a liquid or a gas?' },
+
+  { id: 'u3s1g2', title: 'Solid, liquid or gas?', icon: '🧊', type: 'sort',
+    inst: 'Which state of matter does each sentence describe?',
+    bins: [{ n: 'Solid', i: '🧱', c: '#7b2ff7' }, { n: 'Liquid', i: '💧', c: '#3a86ff' }, { n: 'Gas', i: '🎈', c: '#2ec4b6' }],
+    items: [
+      { e: '🔲', t: 'Particles very close together, in a regular pattern', b: 0 }, { e: '📍', t: 'Particles vibrate in a fixed position only', b: 0 },
+      { e: '🧱', t: 'Has a fixed shape and cannot be squashed – like bricks', b: 0 }, { e: '🔀', t: 'Particles closely packed but not in a fixed pattern', b: 1 },
+      { e: '↔️', t: 'Particles can slide past one another', b: 1 }, { e: '🥛', t: 'Can flow and takes the shape of its container – like water', b: 1 },
+      { e: '🌌', t: 'Particles very far apart, with big spaces between them', b: 2 }, { e: '💨', t: 'Particles move very fast and freely in all directions', b: 2 },
+      { e: '☁️', t: 'Has no shape of its own at all – like air', b: 2 } ] },
+
+  { id: 'u3s1g3', title: 'Make a gas', icon: '⚗️', type: 'quiz', items: [
+    { html: '<div class="note">Pour some vinegar into a jar. Add a teaspoon of bicarbonate of soda. They react to make a gas.</div><div style="text-align:center;font-size:22px;font-weight:800;margin:6px 0">🍶 Vinegar + 🥄 Bicarbonate of soda = 🫧 Carbon dioxide</div>',
+      q: 'What state of matter is vinegar?', o: ['Liquid', 'Solid', 'Gas'], a: 0, fixed: true },
+    { q: 'What state of matter is bicarbonate of soda?', o: ['Solid', 'Liquid', 'Gas'], a: 0, fixed: true },
+    { q: 'What new substance forms?', o: ['Carbon dioxide gas', 'Oxygen gas', 'Water', 'Salt'], a: 0 },
+    { q: 'What state of matter is the new substance?', o: ['Gas', 'Solid', 'Liquid'], a: 0, fixed: true },
+    { q: 'Is an "empty" bottle really empty?', o: ['No – it is full of air', 'Yes – there is nothing in it', 'No – it is full of water', 'Yes – air is not real'], a: 0 },
+    { q: 'You blow into a balloon. What is inside it?', o: ['Air (a gas)', 'Water', 'Nothing', 'A solid'], a: 0 },
+    { q: 'Why don\'t we always know that gases are there?', o: ['We can\'t see most gases – they are invisible', 'Gases are always very heavy', 'Gases are always coloured', 'Gases are only in space'], a: 0 } ] },
+
+  { id: 'u3s1g4', title: 'What is in the air?', icon: '🌍', type: 'quiz', items: [
+    { q: 'Air is…', o: ['a mixture of different gases', 'one single gas', 'a liquid', 'a solid'], a: 0 },
+    { q: 'Which gas makes up about four-fifths of the air?', o: ['Nitrogen', 'Oxygen', 'Carbon dioxide', 'Helium'], a: 0 },
+    { q: 'Which gas do we need to live and breathe in?', o: ['Oxygen', 'Nitrogen', 'Hydrogen', 'Helium'], a: 0 },
+    { q: 'Which gas do we breathe out?', o: ['Carbon dioxide', 'Oxygen', 'Hydrogen', 'Helium'], a: 0 },
+    { q: 'Which of these gases is also in air?', o: ['Water vapour', 'Helium', 'Hydrogen', 'Steam from a kettle only'], a: 0 },
+    { q: 'What is the layer of air that surrounds the Earth called?', o: ['The atmosphere', 'The ocean', 'The crust', 'The water cycle'], a: 0 },
+    { q: 'Which gases are NOT found in air?', o: ['Hydrogen and helium', 'Oxygen and nitrogen', 'Carbon dioxide and water vapour', 'Nitrogen and oxygen'], a: 0 },
+    { q: 'Why can we squash a gas but not a solid?', o: ['Gas particles have big spaces between them; solid particles are very close together', 'Gas particles are bigger', 'Solids are always soft', 'Gases have a fixed shape'], a: 0 } ] },
+
+  { id: 'u3s1g5', title: 'Air pollution', icon: '🏭', type: 'sort',
+    inst: 'Air pollution is outside and inside buildings too. Where does each pollution come from?',
+    bins: [{ n: 'Outside', i: '🌆', c: '#ff9f1c' }, { n: 'In homes, schools and buildings', i: '🏠', c: '#ef476f' }],
+    items: [
+      { e: '🏭', t: 'Smoke and gases from factories', b: 0 }, { e: '⚡', t: 'Power stations', b: 0 }, { e: '🚚', t: 'Cars and trucks', b: 0 }, { e: '✈️', t: 'Aeroplanes', b: 0 },
+      { e: '🍳', t: 'Smoke from cooking', b: 1 }, { e: '🚬', t: 'Smoke from cigarettes', b: 1 }, { e: '🧴', t: 'Fumes from spray cans', b: 1 }, { e: '🎨', t: 'Fumes from paints', b: 1 } ] },
+
+  { id: 'u3s1g6', title: 'Clean air quiz', icon: '😷', type: 'quiz', items: [
+    { q: 'What do smoke, dust and gases do to the air?', o: ['Make it dirty and harmful to living things', 'Make it cleaner', 'Make it colder', 'Nothing'], a: 0 },
+    { q: 'How can air pollution affect us?', o: ['It can make us cough, feel dizzy and give us headaches', 'It makes us stronger', 'It helps us breathe', 'It has no effect'], a: 0 },
+    { q: 'What can the smoke from cigarettes cause?', o: ['Serious diseases that harm our lungs', 'Better breathing', 'Stronger bones', 'Nothing'], a: 0 },
+    { q: 'To measure air pollution, what do you cover the marked area of plastic with?', o: ['A thin layer of petroleum jelly', 'Water', 'Paint', 'Sand'], a: 0 },
+    { q: 'How big is the marked area on each piece of plastic?', o: ['4 cm long and 2 cm wide', '10 cm long and 10 cm wide', '1 m long', '4 mm wide'], a: 0 },
+    { q: 'How long do you leave the pieces of plastic?', o: ['Three days', 'Three minutes', 'Three hours', 'Three weeks'], a: 0 },
+    { q: 'You number your drawings in order of pollution. Which number has the least pollution?', o: ['1', '5', '3', '0'], a: 0 },
+    { q: 'What kind of graph do you draw of your results?', o: ['A dot plot', 'A life cycle', 'A map', 'A flow chart'], a: 0 } ] }
+  ] },
+
+/* ---------- 3.2 ---------- */
+{ id: '3.2', title: 'Properties of water', icon: '🌡️', color: 'linear-gradient(135deg,#ef476f,#ff9f1c)',
+  learn: 'Water exists in all three states: <b>ice</b> (solid), liquid water, and <b>water vapour</b> (gas). Water changes state when it is heated or cooled. solid + heat → liquid (<b>melting</b>). liquid + heat → gas (<b>boiling</b>). We measure <b>temperature</b> with a <b>thermometer</b> in °C. The melting point of ice is <b>0 °C</b>; pure water boils at <b>100 °C</b>. Heated substances <b>expand</b>; cooled substances <b>contract</b> – but water expands when it freezes.',
+  words: ['boil', 'boiling point', 'contract', 'expand', 'melt', 'melting point', 'steam', 'temperature', 'thermometer'],
+  games: [
+  { id: 'u3s2g1', title: 'Thermometer', icon: '🌡️', type: 'thermo',
+    inst: 'Move the thermometer and watch what happens to pure water.' },
+
+  { id: 'u3s2g2', title: 'Water words', icon: '🔗', type: 'match',
+    inst: 'Tap a word, then tap what it means.',
+    pairs: [
+      ['Melt', 'A solid changes into a liquid'],
+      ['Boil', 'A liquid is heated and forms bubbles of gas throughout'],
+      ['Steam', 'Heated water vapour'],
+      ['Temperature', 'The amount of heat in a substance'],
+      ['Thermometer', 'We measure temperature with it'],
+      ['Melting point', 'The temperature at which a substance melts'],
+      ['Boiling point', 'The temperature at which a substance boils'],
+      ['Expand', 'Take up more space'] ] },
+
+  { id: 'u3s2g3', title: 'Heat equations', icon: '➕', type: 'fill',
+    inst: 'Complete the word equations.',
+    words: ['solid', 'liquid', 'gas', 'heat'],
+    text: [
+      'Melting:  [solid] + heat → [liquid]',
+      'Boiling:  liquid + [heat] → [gas]',
+      'Evaporation:  [liquid] + heat → gas' ] },
+
+  { id: 'u3s2g4', title: 'Expand or contract?', icon: '↔️', type: 'sort',
+    inst: 'Does the substance expand or contract?',
+    bins: [{ n: 'Expands', i: '⬅️➡️', c: '#ef476f' }, { n: 'Contracts', i: '➡️⬅️', c: '#3a86ff' }],
+    items: [
+      { e: '🔥', t: 'A substance gains heat', b: 0 }, { e: '❄️', t: 'A substance cools down', b: 1 },
+      { e: '🏃', t: 'Its particles move faster and spread out', b: 0 }, { e: '🐢', t: 'Its particles move more slowly and closer together', b: 1 },
+      { e: '🧊', t: 'Water freezes in a bottle in the freezer', b: 0 } ] },
+
+  { id: 'u3s2g5', title: 'Properties of water quiz', icon: '❓', type: 'quiz', items: [
+    { q: 'When ice is heated, what happens to its particles?', o: ['They gain energy, move more quickly and pull further apart', 'They lose energy and stop moving', 'They get bigger', 'They join together tightly'], a: 0 },
+    { q: 'When water boils, what are the bubbles?', o: ['A gas called steam', 'Air from outside', 'Ice', 'Salt'], a: 0 },
+    { q: 'Where does boiling happen?', o: ['Throughout the liquid, not just on the surface', 'Only on the surface', 'Only at the bottom', 'Only in the steam'], a: 0 },
+    { q: 'Ice melts at the same temperature at which water…', o: ['freezes', 'boils', 'evaporates', 'expands'], a: 0 },
+    { q: 'Most of our water does not boil at exactly 100 °C. Why?', o: ['It has small amounts of other substances mixed with it', 'It is too cold', 'It is too clean', 'Thermometers are always wrong'], a: 0 },
+    { q: 'Water boils at a lower temperature when we are…', o: ['higher above sea level', 'lower below sea level', 'in a bigger pan', 'using less water'], a: 0 },
+    { q: 'Melting point and boiling point are properties of substances. When do they change?', o: ['Only if the substance itself changes', 'Every day', 'When you use a different thermometer', 'Never, even if the substance changes'], a: 0 },
+    { q: 'Water expands when it freezes. What does this property allow ice to do?', o: ['Float', 'Sink', 'Boil', 'Dissolve'], a: 0 },
+    { q: 'Your teacher heats water to find its boiling point. How do you stay safe?', o: ['Be careful not to touch the beaker or hot water', 'Hold the beaker with your hand', 'Put your finger in the water', 'Stand very close and lean over the steam'], a: 0 } ] }
+  ] },
+
+/* ---------- 3.3 ---------- */
+{ id: '3.3', title: 'Evaporation and condensation', icon: '☁️', color: 'linear-gradient(135deg,#2ec4b6,#22b35e)',
+  learn: 'When particles on the surface of a liquid gain heat and escape into the air as a gas, the liquid <b>evaporates</b> – like a puddle drying up or washing getting dry. When a gas cools and changes into a liquid, this is <b>condensation</b>. Condensation is the <b>reverse</b> of evaporation. Water moves from the land and sea to the air and back again in the <b>water cycle</b>. Rain, snow and hail are <b>precipitation</b>.',
+  words: ['condensation', 'evaporate', 'evaporation', 'precipitation', 'reverse', 'water cycle'],
+  games: [
+  { id: 'u3s3g1', title: 'Change of state chart', icon: '🔁', type: 'label',
+    inst: 'Name each change of state, 1 to 4.',
+    svg: STATES_SVG, labels: ['melting', 'freezing', 'evaporation', 'condensation'] },
+
+  { id: 'u3s3g2', title: 'Heating or cooling?', icon: '🔥', type: 'sort',
+    inst: 'Does heating or cooling happen in each change of state?',
+    bins: [{ n: 'Heating', i: '🔥', c: '#ef476f' }, { n: 'Cooling', i: '❄️', c: '#3a86ff' }],
+    items: [{ e: '🧊', t: 'Melting', b: 0 }, { e: '♨️', t: 'Evaporation', b: 0 }, { e: '🫧', t: 'Boiling', b: 0 }, { e: '💧', t: 'Condensation', b: 1 }, { e: '❄️', t: 'Freezing', b: 1 }] },
+
+  { id: 'u3s3g3', title: 'Evaporation and condensation', icon: '💨', type: 'quiz', items: [
+    { q: 'Water changes into a gas called…', o: ['water vapour', 'oxygen', 'carbon dioxide', 'nitrogen'], a: 0 },
+    { q: 'Which of these is evaporation?', o: ['A puddle drying up', 'Ice forming in a freezer', 'Rain falling', 'Drops forming on a cold mirror'], a: 0 },
+    { q: 'Why does evaporation happen?', o: ['Some particles gain heat energy, move faster and escape from the surface into the air', 'Particles lose energy and stop', 'The liquid gets heavier', 'Air pushes the water down'], a: 0 },
+    { q: 'One glass of water is in a warm place and one in a cool place for two days. Which will have the least water?', o: ['The glass in the warm place', 'The glass in the cool place', 'They will be the same'], a: 0, fixed: true },
+    { q: 'Breathe onto a mirror. What do you observe?', o: ['Drops of liquid water form on it', 'The mirror gets hot and dry', 'Nothing happens', 'Ice forms on it'], a: 0 },
+    { q: 'Why do the drops form on the mirror?', o: ['Warm breath contains water vapour; it cools on the mirror and changes into liquid water', 'The mirror makes water', 'Water comes through the glass', 'The air is dry'], a: 0 },
+    { q: 'During condensation, the gas particles…', o: ['lose energy, slow down and move closer together', 'gain energy and move faster', 'get bigger', 'escape into the air'], a: 0 },
+    { q: 'Condensation is the reverse of…', o: ['evaporation', 'melting', 'dissolving', 'boiling water in a pan'], a: 0 },
+    { q: 'Why does washing dry quicker on a hot day?', o: ['The heat makes the water evaporate faster', 'Hot days have more rain', 'The washing gets heavier', 'Cold makes water evaporate'], a: 0 } ] },
+
+  { id: 'u3s3g4', title: 'Cold glass investigation', icon: '🥛', type: 'sort',
+    inst: 'Two identical glasses: one with water, one with ice. Wipe them and leave them for 15 minutes. Which type of variable is each one?',
+    bins: [{ n: 'Control (kept the same)', i: '🔒', c: '#7b2ff7' }, { n: 'Independent (you change it)', i: '🔄', c: '#ff9f1c' }, { n: 'Dependent (you observe it)', i: '👀', c: '#2ec4b6' }],
+    items: [
+      { e: '🥛', t: 'Identical glasses', b: 0 }, { e: '⏱️', t: 'Leaving both for 15 minutes', b: 0 },
+      { e: '🧊', t: 'Ice in one glass – how cold the glass is', b: 1 }, { e: '💧', t: 'Drops of water forming on the glass', b: 2 } ] },
+
+  { id: 'u3s3g5', title: 'The water cycle', icon: '🌧️', type: 'label',
+    inst: 'Name each numbered part of the water cycle.',
+    svg: CYCLE_SVG, labels: ['heat from the sun', 'evaporation', 'condensation', 'precipitation'],
+    extra: { q: 'The water cycle happens mainly because of…', o: ['evaporation and condensation', 'melting and dissolving', 'boiling and freezing only', 'wind and sound'], a: 0 } },
+
+  { id: 'u3s3g6', title: 'Water cycle sentences', icon: '✍️', type: 'fill',
+    inst: 'Complete these sentences about the water cycle.',
+    words: ['evaporates', 'condenses', 'water', 'precipitation', 'water vapour', 'rain'],
+    text: [
+      'Water on the Earth\'s surface [evaporates] and moves up into the air as [water vapour].',
+      'The water vapour cools and [condenses] as it rises into the air.',
+      '[rain], snow and hail are forms of [precipitation] that bring [water] back to the Earth\'s surface.' ] },
+
+  { id: 'u3s3g7', title: 'Model of the water cycle', icon: '🥣', type: 'order',
+    inst: 'Put the steps for making a model of the water cycle in order.',
+    items: ['Place the small dish inside the bowl', 'Pour about 1 cm of water into the bowl around the dish', 'Put the plastic wrap over the bowl', 'Put the small stone on the plastic', 'Leave the bowl in a warm, sunny place for a few hours'] }
+  ] },
+
+/* ---------- 3.4 ---------- */
+{ id: '3.4', title: 'Solutions', icon: '🧂', color: 'linear-gradient(135deg,#ff9f1c,#ffd23f)',
+  learn: 'When sugar <b>dissolves</b> in tea, its particles spread out into the spaces between the tea particles. Solids that dissolve are <b>soluble</b>; solids that cannot are <b>insoluble</b>. The mixture is a <b>solution</b>: the solid is the <b>solute</b> and the liquid is the <b>solvent</b>. Water is called the <b>universal solvent</b>. We can get the solute back by evaporation – dissolving is <b>reversible</b>.',
+  words: ['dissolve', 'fertilisers', 'insoluble', 'pesticides', 'reversible', 'solute', 'solution', 'soluble', 'solvent', 'uniform', 'universal'],
+  games: [
+  { id: 'u3s4g1', title: 'Watch salt dissolve', icon: '🥄', type: 'dissolve',
+    inst: 'Salt has been added to water. Stir and watch the particles.' },
+
+  { id: 'u3s4g2', title: 'Solute or solvent?', icon: '⚖️', type: 'sort',
+    inst: 'Is it the solute (the solid) or the solvent (the liquid)?',
+    bins: [{ n: 'Solute', i: '🧂', c: '#ff9f1c' }, { n: 'Solvent', i: '💧', c: '#3a86ff' }],
+    items: [
+      { e: '🍬', t: 'Sugar in tea', b: 0 }, { e: '🍵', t: 'The tea that sugar dissolves in', b: 1 }, { e: '🧂', t: 'Salt in sea water', b: 0 },
+      { e: '🌊', t: 'The water in sea water', b: 1 }, { e: '💎', t: 'Coloured crystals in water', b: 0 }, { e: '🍮', t: 'Jelly powder in jelly', b: 0 }, { e: '🚰', t: 'The water in jelly', b: 1 } ] },
+
+  { id: 'u3s4g3', title: 'Is it a solution?', icon: '🥤', type: 'sort',
+    inst: 'Does the mixture make a solution?',
+    bins: [{ n: 'Solution', i: '✅', c: '#22b35e' }, { n: 'Not a solution', i: '❌', c: '#ef476f' }],
+    items: [{ e: '☕', t: 'Coffee and hot water', b: 0 }, { e: '🧃', t: 'Cooldrink powder and water', b: 0 }, { e: '🏖️', t: 'Sand and water', b: 1 }, { e: '🌾', t: 'Flour and water', b: 1 }, { e: '🌊', t: 'Salt and water (sea water)', b: 0 }] },
+
+  { id: 'u3s4g4', title: 'Water pollution', icon: '🐟', type: 'sort',
+    inst: 'Is this pollutant soluble or insoluble?',
+    bins: [{ n: 'Soluble', i: '🫗', c: '#7b2ff7' }, { n: 'Insoluble', i: '🪨', c: '#ff9f1c' }],
+    items: [{ e: '🏭', t: 'Acids from factories', b: 0 }, { e: '🌱', t: 'Chemical fertilisers', b: 0 }, { e: '🐛', t: 'Pesticides', b: 0 }, { e: '🛢️', t: 'Oil', b: 1 }, { e: '🥤', t: 'Plastics', b: 1 }, { e: '🚽', t: 'Human body waste', b: 1 }] },
+
+  { id: 'u3s4g5', title: 'Solutions quiz', icon: '❓', type: 'quiz', items: [
+    { q: 'What is dissolving?', o: ['The particles of a solid spread out into the spaces between the particles of a liquid', 'A solid melting into a liquid', 'A liquid changing into a gas', 'A solid sinking to the bottom'], a: 0 },
+    { q: 'Can all solids dissolve?', o: ['No – some solids are insoluble', 'Yes – every solid dissolves', 'Only sand dissolves', 'Only in oil'], a: 0 },
+    { q: 'How do we know the sugar is still in the tea?', o: ['We can taste it', 'We can see it', 'It sinks to the bottom', 'The tea turns solid'], a: 0 },
+    { q: 'A solution always contains…', o: ['a solute and a solvent', 'only a solid', 'only a gas', 'sand and water'], a: 0 },
+    { q: 'Why is water sometimes called the universal solvent?', o: ['So many substances can dissolve in water', 'It is found everywhere in space', 'It never dissolves anything', 'It is always cold'], a: 0 },
+    { q: 'Why can\'t we sometimes see water pollution?', o: ['The substances are dissolved in the water', 'Polluted water is always bright red', 'Pollution sinks to the bottom', 'Pollution floats away'], a: 0 },
+    { q: 'A solution has a uniform appearance. What does that mean?', o: ['It looks the same throughout', 'It has different layers', 'It is always blue', 'It has lumps'], a: 0 },
+    { q: 'How can we get solid salt back from sea water?', o: ['By evaporation', 'By freezing it', 'By shaking it', 'By adding more water'], a: 0 },
+    { q: 'Why do we call dissolving a reversible process?', o: ['We can get back the dissolved solute from the solution', 'It only happens once', 'The solute disappears for ever', 'It makes a new gas'], a: 0 },
+    { q: 'How do fertilisers and pesticides get into rivers?', o: ['They wash or dissolve in rainwater and get washed into rivers', 'Fish carry them', 'The wind blows them', 'They fall from the sky'], a: 0 } ] }
+  ] },
+
+/* ---------- Project ---------- */
+{ id: 'P', title: 'Project: How do people use evaporation?', icon: '👕', color: 'linear-gradient(135deg,#22b35e,#2ec4b6)',
+  learn: '<b>Evaporation</b> happens when a liquid changes into a gas. It can be useful to us – for example, drying washing. Find out how people in your area use evaporation and write a report.',
+  words: ['aim', 'method', 'results', 'conclusion', 'evaluation'],
+  games: [
+  { id: 'u3sPg1', title: 'Plan the project', icon: '🗂️', type: 'order',
+    inst: 'Put the steps of the project in order.',
+    items: ['Brainstorm the ways we use evaporation', 'Make a list of the ways evaporation is useful to us', 'Make a data sheet and ask people in your local area', 'Draw a graph of the number of people who use evaporation in different ways', 'Write a report with your graphs and photos'] },
+  { id: 'u3sPg2', title: 'Report headings', icon: '📝', type: 'match',
+    inst: 'Tap a report heading, then tap its question.',
+    pairs: [['Aim', 'What did we want to find out?'], ['Method', 'What did we do to collect our data?'], ['Results', 'What data did we collect and how did we present it?'], ['Conclusion', 'What did we find out?'], ['Evaluation', 'How can we improve our investigation?']] },
+  { id: 'u3sPg3', title: 'Evaporation survey', icon: '📋', type: 'quiz', items: [
+    { q: 'Evaporation happens when…', o: ['a liquid changes into a gas', 'a gas changes into a liquid', 'a solid changes into a liquid', 'a liquid changes into a solid'], a: 0 },
+    { q: 'Which is an example of using evaporation from the data sheet?', o: ['Drying washing', 'Freezing ice cubes', 'Boiling an egg', 'Lighting a lamp'], a: 0 },
+    { q: 'How many people should you speak to?', o: ['Ten people of different ages, both women and men', 'One person', 'Only your friends', 'Only children'], a: 0 } ] }
+  ] },
+
+/* ---------- Check your progress ---------- */
+{ id: 'C', title: 'Check your progress', icon: '🏆', color: 'linear-gradient(135deg,#7b2ff7,#3a86ff)',
+  learn: 'Show what you know about <b>particles</b>, <b>water</b>, <b>changes of state</b> and <b>solutions</b>.',
+  words: [],
+  games: [
+  { id: 'u3sCg1', title: 'Particles and water', icon: '🔵', type: 'quiz', items: [
+    { html: GASDOTS_SVG, q: 'Does the diagram represent a model of a solid, a liquid or a gas?', o: ['A gas', 'A solid', 'A liquid'], a: 0, fixed: true },
+    { html: GASDOTS_SVG, q: 'Why?', o: ['The particles are very far apart with big spaces between them', 'The particles are packed in a regular pattern', 'The particles are close together and slide past each other', 'There are no particles'], a: 0 },
+    { q: 'Name the three phases of water.', o: ['Ice (solid), water (liquid), water vapour (gas)', 'Ice, snow and hail', 'Rain, clouds and wind', 'Salt, sugar and tea'], a: 0 },
+    { q: 'What is the boiling point of pure water?', o: ['100 °C', '0 °C', '50 °C', '85 °C'], a: 0 },
+    { q: 'What is the melting point of ice?', o: ['0 °C', '100 °C', '10 °C', '–20 °C'], a: 0 } ] },
+
+  { id: 'u3sCg2', title: 'Name the process', icon: '🔤', type: 'match',
+    inst: 'Tap a description, then tap the word for the process.',
+    pairs: [
+      ['A liquid changes into a gas at room temperature', 'Evaporation'],
+      ['A gas changes into a liquid', 'Condensation'],
+      ['A solid changes into a liquid', 'Melting'],
+      ['Water changes into ice', 'Freezing'],
+      ['Heated water changes into steam', 'Boiling'] ] },
+
+  { id: 'u3sCg3', title: 'Sofia\'s bathroom', icon: '🛁', type: 'quiz', items: [
+    { html: '<div class="note">Sofia went into the bathroom after her big sister had a bath. It was full of mist and the mirror was covered in drops of liquid.</div>',
+      q: 'What were the drops of liquid made of?', o: ['Water', 'Oil', 'Soap', 'Salt'], a: 0 },
+    { q: 'Name the process that made the drops of liquid form.', o: ['Condensation', 'Evaporation', 'Melting', 'Dissolving'], a: 0 },
+    { q: 'Why did the drops form?', o: ['Warm air with water vapour touched the cooler mirror, cooled down and changed into liquid water', 'The mirror melted', 'Water came out of the mirror', 'The air was very dry'], a: 0 } ] },
+
+  { id: 'u3sCg4', title: 'Making jelly', icon: '🍮', type: 'quiz', items: [
+    { html: '<div class="note">When you make jelly you mix jelly powder with water to make a solution.</div>',
+      q: 'Name the solute in the jelly solution.', o: ['Jelly powder', 'Water'], a: 0, fixed: true },
+    { q: 'Name the solvent in the jelly solution.', o: ['Water', 'Jelly powder'], a: 0, fixed: true },
+    { q: 'Why is the jelly solution a mixture?', o: ['It is made of particles of different substances mixed together', 'It is one pure substance', 'It is a gas', 'It has no particles'], a: 0 },
+    { q: 'What has happened to the jelly powder?', o: ['It has dissolved – its particles spread out between the water particles', 'It has evaporated', 'It has melted into a gas', 'It has disappeared for ever'], a: 0 } ] }
+  ] }
+] },
+{ id: 4, title: 'The digestive system', icon: '🍎', color: 'linear-gradient(135deg,#ff9f1c,#ef476f)', locked: true },
+{ id: 5, title: 'Forces and magnetism', icon: '🧲', color: 'linear-gradient(135deg,#ef476f,#7b2ff7)', locked: true },
+{ id: 6, title: 'Seasons and adaptations of plants and animals', icon: '🌍', color: 'linear-gradient(135deg,#22b35e,#ffd23f)', locked: true }
+];
+
+/* ============ SCREENS ============ */
+const gameStars = g => STARS[g.id] || 0;
+const secStars = s => s.games.reduce((a, g) => a + gameStars(g), 0);
+const unitStars = u => (u.sections || []).reduce((a, s) => a + secStars(s), 0);
+const unitMax = u => (u.sections || []).reduce((a, s) => a + s.games.length * 3, 0);
+
+function home() {
+  window.scrollTo(0, 0);
+  app.innerHTML = `
+  <div class="hero"><div class="logo">🔬</div><h1>Maaz's Science Quest</h1><p>Cambridge Primary Science · Stage 5</p></div>
+  <div class="grid">${UNITS.map(u => `
+    <button class="tile ${u.locked ? 'locked' : ''}" style="background:${u.color}" data-u="${u.id}">
+      <div class="ic">${u.icon}</div>
+      <div><div class="lbl">Unit ${u.id}</div><div class="nm">${u.title}</div>
+      <div class="st">${u.locked ? '🔒 Coming soon' : '⭐ ' + unitStars(u) + ' / ' + unitMax(u)}</div></div>
+    </button>`).join('')}</div>
+  <div class="credit">مع تحيات سليمان جميل<span class="ph">0097451085117</span></div>`;
+  app.querySelectorAll('.tile').forEach(b => b.onclick = () => {
+    const u = UNITS.find(x => x.id == b.dataset.u);
+    if (u.locked) { toast('This unit is coming soon! 🔒'); shake(b); return; }
+    unitScreen(u);
+  });
+}
+
+function unitScreen(u) {
+  window.scrollTo(0, 0);
+  app.innerHTML = `
+  <div class="bar"><button class="back">⬅ Home</button><div class="t">${u.icon} Unit ${u.id}</div><div class="starsum">⭐ ${unitStars(u)}/${unitMax(u)}</div></div>
+  <h2 style="font-size:28px;margin-bottom:6px">${u.title}</h2>
+  <div class="grid">${u.sections.map((s, i) => `
+    <button class="tile" style="background:${s.color}" data-i="${i}">
+      <div class="ic">${s.icon}</div>
+      <div><div class="lbl">${/^\d/.test(s.id) ? 'Topic ' + s.id : '&nbsp;'}</div><div class="nm">${s.title}</div>
+      <div class="st">⭐ ${secStars(s)} / ${s.games.length * 3}</div></div>
+    </button>`).join('')}</div>`;
+  app.querySelector('.back').onclick = home;
+  app.querySelectorAll('.tile').forEach(b => b.onclick = () => sectionScreen(u, u.sections[b.dataset.i]));
+}
+
+function sectionScreen(u, s) {
+  window.scrollTo(0, 0);
+  app.innerHTML = `
+  <div class="bar"><button class="back">⬅ Unit ${u.id}</button><div class="t">${s.icon} ${/^\d/.test(s.id) ? s.id : ''}</div><div class="starsum">⭐ ${secStars(s)}/${s.games.length * 3}</div></div>
+  <h2 style="font-size:26px;margin-bottom:10px">${s.title}</h2>
+  <div class="learn">📖 ${s.learn}${s.words.length ? `<div class="words">${s.words.map(w => `<span>${w}</span>`).join('')}</div>` : ''}</div>
+  <div class="grid">${s.games.map((g, i) => `
+    <button class="tile" style="background:${s.color};min-height:110px" data-i="${i}">
+      <div class="ic">${g.icon}</div>
+      <div><div class="lbl">Game ${i + 1}</div><div class="nm">${g.title}</div><div class="st">${starStr(gameStars(g))}</div></div>
+    </button>`).join('')}</div>`;
+  app.querySelector('.back').onclick = () => unitScreen(u);
+  app.querySelectorAll('.tile').forEach(b => b.onclick = () => playGame(u, s, +b.dataset.i));
+}
+
+/* ============ GAME SHELL ============ */
+function playGame(u, s, gi) {
+  const g = s.games[gi];
+  window.scrollTo(0, 0);
+  app.innerHTML = `
+  <div class="bar"><button class="back">⬅ Back</button><div class="t">${g.icon} ${g.title}</div></div>
+  <div class="panel"><div class="prog"><i style="width:0%"></i></div><div id="gb"></div></div>`;
+  app.querySelector('.back').onclick = () => sectionScreen(u, s);
+  const ctx = {
+    body: $('#gb'), mistakes: 0,
+    progress(p) { const i = app.querySelector('.prog i'); if (i) i.style.width = Math.round(p * 100) + '%'; },
+    wrong(el, msg) { this.mistakes++; beep(false); shake(el); toast(msg || pick(TRY), 'bad'); },
+    right(el, msg) { beep(true); popEl(el); if (msg !== false) toast(msg || pick(YAY), 'good'); },
+    finish() {
+      if (!document.body.contains(this.body)) return;
+      const n = this.mistakes === 0 ? 3 : this.mistakes <= 2 ? 2 : 1;
+      saveStar(g.id, n); this.progress(1); confetti(); beep(true);
+      const nextG = s.games[gi + 1];
+      this.body.innerHTML = `<div class="win"><div class="big">${n === 3 ? '🏆' : n === 2 ? '🌟' : '🌱'}</div>
+        <h2>${n === 3 ? 'Perfect, Maaz!' : n === 2 ? 'Great work, Maaz!' : 'You did it, Maaz!'}</h2>
+        <div class="stars">${starStr(n)}</div>
+        <button class="next" id="again">🔁 Play again</button>
+        ${nextG ? `<button class="next" id="nx">Next game ➡ ${nextG.icon}</button>` : `<button class="next" id="nx">Back to topic ✅</button>`}</div>`;
+      $('#again').onclick = () => playGame(u, s, gi);
+      $('#nx').onclick = () => nextG ? playGame(u, s, gi + 1) : sectionScreen(u, s);
+    }
+  };
+  ({ quiz: runQuiz, sort: runSort, order: runOrder, match: runMatch, label: runLabel, fill: runFill, key: runKey, bee: runBee, lab: runLab, particles: runParticles, thermo: runThermo, dissolve: runDissolve, rice: runRice, wave: runWave, guitar: runGuitar, bottles: runBottles })[g.type](g, ctx);
+}
+
+/* ---------- multiple choice (single question renderer) ---------- */
+function mcq(container, it, ctx, onDone) {
+  if (!container || !document.body.contains(container)) return;
+  const idx = it.fixed ? it.o.map((_, i) => i) : shuffle(it.o.map((_, i) => i));
+  container.innerHTML = `${it.html || ''}<div class="q">${it.q}</div><div class="opts">${idx.map((k, j) =>
+    `<button class="opt" data-k="${k}"><span class="L">${'ABCD'[j]}</span><span>${it.o[k]}</span></button>`).join('')}</div>`;
+  container.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    if (+b.dataset.k === it.a) {
+      b.classList.add('ok'); container.querySelectorAll('.opt').forEach(x => x.disabled = true);
+      ctx.right(b); setTimeout(onDone, 900);
+    } else { b.classList.add('no'); b.disabled = true; ctx.wrong(b); }
+  });
+}
+function runQuiz(g, ctx) {
+  const items = g.items; let i = 0;
+  const show = () => { ctx.progress(i / items.length); if (i >= items.length) return ctx.finish();
+    ctx.body.innerHTML = `<div class="inst">Question ${i + 1} of ${items.length}</div><div id="qq"></div>`;
+    mcq($('#qq'), items[i], ctx, () => { i++; show(); }); };
+  show();
+}
+
+/* ---------- sort ---------- */
+function runSort(g, ctx) {
+  const items = shuffle(g.items); let i = 0;
+  ctx.body.innerHTML = `<div class="inst">${g.inst}</div><div id="sc"></div>
+    <div class="bins" style="grid-template-columns:repeat(${g.bins.length > 3 ? 2 : g.bins.length},minmax(0,1fr))${g.bins.length === 3 ? ';font-size:14px' : ''}">${g.bins.map((b, k) =>
+      `<button class="bin" style="background:${b.c}${g.bins.length === 5 && k === 4 ? ';grid-column:1/-1' : ''}" data-k="${k}"><span class="bi">${b.i}</span>${b.n}<span class="chips"></span></button>`).join('')}</div>`;
+  const card = () => { ctx.progress(i / items.length); if (i >= items.length) return setTimeout(() => ctx.finish(), 700);
+    $('#sc').innerHTML = `<div class="card pop"><div class="e">${items[i].e}</div><div class="tx">${items[i].t}</div></div>`; };
+  ctx.body.querySelectorAll('.bin').forEach(b => b.onclick = () => {
+    if (i >= items.length) return;
+    if (+b.dataset.k === items[i].b) {
+      const c = document.createElement('span'); c.textContent = items[i].e + ' ' + items[i].t.split(' – ')[0].split(' (')[0];
+      b.querySelector('.chips').appendChild(c); ctx.right(b, false); i++; card();
+    } else { ctx.wrong(b); shake($('#sc .card')); }
+  });
+  card();
+}
+
+/* ---------- order ---------- */
+function runOrder(g, ctx) {
+  const N = g.items.length; let pool; do { pool = shuffle(g.items.map((_, k) => k)); } while (pool.every((v, k) => v === k));
+  let seq = [];
+  const draw = () => {
+    ctx.progress(seq.length / N * .9);
+    ctx.body.innerHTML = `<div class="inst">${g.inst}</div>
+      <div class="slots">${g.items.map((_, k) => seq[k] !== undefined
+        ? `<div class="slot filled" data-k="${k}"><span class="n">${k + 1}</span>${g.items[seq[k]]}<span style="margin-left:auto;opacity:.5">✖</span></div>`
+        : `<div class="slot"><span class="n">${k + 1}</span><span style="opacity:.4">tap a card below…</span></div>`).join('')}</div>
+      <div class="pool">${pool.map(k => `<button class="chip" data-k="${k}" ${seq.includes(k) ? 'disabled' : ''}>${g.items[k]}</button>`).join('')}</div>
+      <button class="next" id="chk" ${seq.length < N ? 'disabled' : ''}>✔ Check</button>`;
+    ctx.body.querySelectorAll('.chip').forEach(b => b.onclick = () => { seq.push(+b.dataset.k); draw(); });
+    ctx.body.querySelectorAll('.slot.filled').forEach(sl => sl.onclick = () => { seq.splice(+sl.dataset.k, 1); draw(); });
+    $('#chk').onclick = () => {
+      const right = seq.filter((v, k) => v === k).length;
+      if (right === N) { ctx.right($('#chk')); done(); }
+      else ctx.wrong($('.slots'), `${right} of ${N} are in the right place. Try again! 💪`);
+    };
+  };
+  const done = () => {
+    ctx.progress(1);
+    let html = `<div class="q" style="text-align:center">✅ Correct order!</div>`;
+    if (g.cycle) {
+      html += `<div class="ring"><svg viewBox="0 0 100 100"><defs><marker id="ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ff9f1c"/></marker></defs>`;
+      for (let k = 0; k < N; k++) { const a1 = (k / N) * 2 * Math.PI - Math.PI / 2 + .35, a2 = ((k + 1) / N) * 2 * Math.PI - Math.PI / 2 - .35;
+        html += `<path d="M${50 + 38 * Math.cos(a1)} ${50 + 38 * Math.sin(a1)} A38 38 0 0 1 ${50 + 38 * Math.cos(a2)} ${50 + 38 * Math.sin(a2)}" fill="none" stroke="#ff9f1c" stroke-width="2.2" marker-end="url(#ah)"/>`; }
+      html += `</svg>${g.items.map((t, k) => { const a = (k / N) * 2 * Math.PI - Math.PI / 2; return `<div class="rb" style="left:${50 + 38 * Math.cos(a)}%;top:${50 + 38 * Math.sin(a)}%">${t}</div>`; }).join('')}</div>`;
+    } else html += `<div class="slots">${g.items.map((t, k) => `<div class="slot filled" style="cursor:default"><span class="n">${k + 1}</span>${t}</div>`).join('')}</div>`;
+    ctx.body.innerHTML = html + `<div id="after"></div><button class="next" id="go">${g.after ? 'Next question ➡' : 'Finish ⭐'}</button>`;
+    $('#go').onclick = () => {
+      if (g.after) { $('#go').remove(); mcq($('#after'), g.after, ctx, () => ctx.finish()); $('#after').scrollIntoView({ behavior: 'smooth' }); }
+      else ctx.finish();
+    };
+  };
+  draw();
+}
+
+/* ---------- match ---------- */
+function runMatch(g, ctx) {
+  const L = shuffle(g.pairs.map((_, k) => k)), R = shuffle(g.pairs.map((_, k) => k));
+  const cols = ['#ff4d8d', '#ff9f1c', '#2ec4b6', '#3a86ff', '#7b2ff7', '#22b35e', '#ef476f', '#f4a261'];
+  let sel = null, done = 0;
+  ctx.body.innerHTML = `<div class="inst">${g.inst}</div><div class="mcols"><div>${L.map(k => `<button class="mi l" data-k="${k}">${g.pairs[k][0]}</button>`).join('')}</div>
+    <div>${R.map(k => `<button class="mi r" data-k="${k}">${g.pairs[k][1]}</button>`).join('')}</div></div>`;
+  ctx.body.querySelectorAll('.mi.l').forEach(b => b.onclick = () => {
+    if (b.classList.contains('done')) return;
+    ctx.body.querySelectorAll('.mi.l').forEach(x => x.classList.remove('sel')); b.classList.add('sel'); sel = b; });
+  ctx.body.querySelectorAll('.mi.r').forEach(b => b.onclick = () => {
+    if (b.classList.contains('done')) return;
+    if (!sel) { toast('First tap a word on the left 👈'); shake(b); return; }
+    if (b.dataset.k === sel.dataset.k) {
+      const c = cols[done % cols.length];
+      [sel, b].forEach(x => { x.classList.remove('sel'); x.classList.add('done'); x.style.background = c; });
+      ctx.right(b, false); sel = null; done++; ctx.progress(done / g.pairs.length);
+      if (done === g.pairs.length) setTimeout(() => ctx.finish(), 800);
+    } else ctx.wrong(b);
+  });
+}
+
+/* ---------- selects (label / fill) ---------- */
+function checkSelects(ctx, onAll) {
+  const sels = [...ctx.body.querySelectorAll('select')];
+  if (sels.some(s => !s.value)) { toast('Choose an answer for every gap first ✏️'); return; }
+  let bad = 0;
+  sels.forEach(s => { const ok = s.dataset.a.split('|').includes(s.value); s.classList.toggle('ok', ok); s.classList.toggle('no', !ok); if (ok) s.disabled = true; else bad++; });
+  ctx.progress(sels.filter(s => s.disabled).length / sels.length * .95);
+  if (bad) ctx.wrong(ctx.body.querySelector('select.no'), `${bad} not right yet – change the red ones and try again! 💪`);
+  else { ctx.right($('#chk')); onAll(); }
+}
+const optionsHtml = list => `<option value="">— choose —</option>` + shuffle(list).map(w => `<option value="${w}">${w}</option>`).join('');
+function runLabel(g, ctx) {
+  ctx.body.innerHTML = `<div class="inst">${g.inst}</div>${g.svg}
+    <div style="max-width:420px;margin:8px auto">${g.labels.map((l, k) => `<div class="lrow"><span class="n">${k + 1}</span><select data-a="${l}">${optionsHtml(g.labels)}</select></div>`).join('')}</div>
+    <button class="next" id="chk">✔ Check</button><div id="after"></div>`;
+  $('#chk').onclick = () => checkSelects(ctx, () => {
+    $('#chk').remove();
+    if (g.extra) { mcq($('#after'), g.extra, ctx, () => ctx.finish()); $('#after').scrollIntoView({ behavior: 'smooth' }); }
+    else setTimeout(() => ctx.finish(), 800);
+  });
+}
+function runFill(g, ctx) {
+  ctx.body.innerHTML = `<div class="inst">${g.inst}</div>
+    <div class="words" style="margin-bottom:8px">${g.words.map(w => `<span>${w}</span>`).join('')}</div>
+    <div class="fill">${g.text.map(t => `<p>${t.replace(/\[([^\]]+)\]/g, (_, a) => `<select data-a="${a}">${optionsHtml(g.words)}</select>`)}</p>`).join('')}</div>
+    <button class="next" id="chk">✔ Check</button>`;
+  $('#chk').onclick = () => checkSelects(ctx, () => setTimeout(() => ctx.finish(), 800));
+}
+
+/* ---------- seed key ---------- */
+const KEY_QS = [
+  { q: 'Does it have hooks or spines?', yes: 'Animals carry it in their fur 🐕' },
+  { q: 'Does it have wings or a parachute of hairs?', yes: 'Wind dispersal 🌬️' },
+  { q: 'Does it have a spongy covering that floats?', yes: 'Water dispersal 🌊' },
+  { q: 'Is it a dry pod that splits open?', yes: 'Splits open / explodes 💥' },
+  { q: 'Is it a heavy, round fruit that falls from a tree?', yes: 'Drop and roll 🍎' },
+  { q: 'Is it a soft, juicy, colourful fruit?', yes: 'Animals eat it 🐒' } ];
+const KEY_SEEDS = [
+  { e: '🦔', n: 'A seed covered in spines and hooks', ans: 0 },
+  { e: '🌼', n: 'A dandelion seed – tiny and light, with fine hairs on top', ans: 1 },
+  { e: '🪽', n: 'A seed with thin papery wings', ans: 1 },
+  { e: '🥥', n: 'A coconut – a big fruit with a thick spongy covering', ans: 2 },
+  { e: '🫛', n: 'A dry bean pod with seeds inside', ans: 3 },
+  { e: '🍎', n: 'An apple – a heavy, round fruit on a tall tree', ans: 4 },
+  { e: '🍅', n: 'A tomato – soft, juicy and colourful, with small seeds', ans: 5 } ];
+function runKey(g, ctx) {
+  const seeds = shuffle(KEY_SEEDS); let si = 0;
+  const next = () => {
+    ctx.progress(si / seeds.length); if (si >= seeds.length) return ctx.finish();
+    const sd = seeds[si]; let qi = 0;
+    const draw = () => {
+      ctx.body.innerHTML = `<div class="inst">${g.inst} (${si + 1} of ${seeds.length})</div>
+        <div class="card"><div class="e">${sd.e}</div><div class="tx">${sd.n}</div></div>
+        ${KEY_QS.map((k, j) => `<div class="keyq ${j === qi ? 'on' : j < qi ? 'done' : ''}"><span>${j + 1}. ${k.q}</span>
+          ${j < qi ? '<span class="yn">❌ No → next</span>' : j === qi ? '<span class="yn"><button class="yes" data-v="1">Yes</button><button class="no2" data-v="0">No</button></span>' : ''}</div>`).join('')}
+        <div id="res" style="text-align:center;margin-top:10px"></div>`;
+      ctx.body.querySelectorAll('.keyq.on button').forEach(b => b.onclick = () => {
+        const correctYes = qi === sd.ans;
+        if ((b.dataset.v === '1') === correctYes) {
+          if (correctYes) {
+            ctx.right(b, false); ctx.body.querySelector('.keyq.on .yn').innerHTML = '✅ Yes';
+            $('#res').innerHTML = `<div class="badge pop">${KEY_QS[qi].yes}</div><br><button class="next" id="ns">Next seed ➡</button>`;
+            $('#ns').onclick = () => { si++; next(); };
+          } else { beep(true); qi++; draw(); }
+        } else ctx.wrong(b, 'Look at the seed again and try again! 🔍');
+      });
+    };
+    draw();
+  };
+  next();
+}
+
+/* ---------- busy bee ---------- */
+function flowerSVG(k, col, idx) {
+  let p = ''; for (let j = 0; j < 6; j++) { const a = j * Math.PI / 3; p += `<ellipse cx="${60 + 26 * Math.cos(a)}" cy="${55 + 26 * Math.sin(a)}" rx="20" ry="14" transform="rotate(${j * 60} ${60 + 26 * Math.cos(a)} ${55 + 26 * Math.sin(a)})" fill="${col}"/>`; }
+  let an = ''; for (let j = 0; j < 4; j++) { const a = j * Math.PI / 2 + Math.PI / 4, x = 60 + 19 * Math.cos(a), y = 55 + 19 * Math.sin(a);
+    an += `<line x1="60" y1="55" x2="${x}" y2="${y}" stroke="#f9a825" stroke-width="2"/><circle cx="${x}" cy="${y}" r="6" fill="#ef6c00"/>`; }
+  return `<svg viewBox="0 0 120 140" data-f="${idx}">
+    <rect x="57" y="85" width="6" height="55" fill="#43a047"/><ellipse cx="78" cy="118" rx="14" ry="6" fill="#43a047" transform="rotate(-30 78 118)"/>
+    ${p}<circle cx="60" cy="55" r="16" fill="#fff8e1"/>
+    <g class="tgt" data-t="anther" data-f="${idx}">${an}<circle cx="60" cy="55" r="27" fill="transparent"/></g>
+    <g class="tgt" data-t="stigma" data-f="${idx}"><circle cx="60" cy="55" r="9" fill="#7cb342" stroke="#33691e" stroke-width="2"/><circle cx="60" cy="55" r="11" fill="transparent"/></g>
+  </svg>`;
+}
+function runBee(g, ctx) {
+  const KINDS = [{ n: 'pink', c: '#ff4d8d' }, { n: 'yellow', c: '#ffc300' }, { n: 'purple', c: '#9b5de5' }];
+  const flowers = shuffle([0, 0, 1, 1, 2, 2]);
+  const rounds = shuffle([0, 1, 2]); let r = 0, step = 0, from = -1;
+  ctx.body.innerHTML = `<div class="inst" id="bi"></div>
+    <div class="legend"><span><i style="background:#ef6c00"></i>anthers – make pollen</span><span><i style="background:#7cb342"></i>stigma – sticky, catches pollen</span></div>
+    <div class="garden" id="gd">${flowers.map((k, i) => flowerSVG(k, KINDS[k].c, i)).join('')}<div id="bee">🐝<span class="pd"></span></div></div>`;
+  const gd = $('#gd'), bee = $('#bee');
+  const moveBee = el => { const a = el.getBoundingClientRect(), b = gd.getBoundingClientRect(); bee.style.left = (a.left - b.left + a.width / 2 - 20) + 'px'; bee.style.top = (a.top - b.top + a.height / 2 - 34) + 'px'; };
+  bee.style.left = '10px'; bee.style.top = '10px';
+  const setInst = () => {
+    ctx.progress((r * 2 + step) / 6);
+    const K = KINDS[rounds[r]];
+    $('#bi').innerHTML = step === 0
+      ? `Round ${r + 1} of 3: Tap the <b>anthers</b> of a <b style="color:${K.c}">${K.n}</b> flower to collect pollen.`
+      : `Now carry the pollen to the <b>stigma</b> of a <b style="color:${K.c}">${K.n}</b> flower – the same flower or another one.`;
+  };
+  gd.querySelectorAll('.tgt').forEach(t => t.onclick = ev => {
+    ev.stopPropagation();
+    const fi = +t.dataset.f, kind = flowers[fi], want = rounds[r];
+    if (step === 0) {
+      if (t.dataset.t !== 'anther') return ctx.wrong(t.closest('svg'), 'Pollen is made by the anthers. Try again! 🟠');
+      if (kind !== want) return ctx.wrong(t.closest('svg'), `That is not a ${KINDS[want].n} flower. Try again!`);
+      moveBee(t.closest('svg')); from = fi; step = 1; const pd = bee.querySelector('.pd'); pd.style.display = 'block'; pd.style.background = '#ffca28';
+      ctx.right(t.closest('svg'), 'Pollen sticks to the bee! 🐝'); setInst();
+    } else {
+      if (t.dataset.t !== 'stigma') return ctx.wrong(t.closest('svg'), 'The pollen must go to the sticky stigma. Try again! 🟢');
+      if (kind !== want) return ctx.wrong(t.closest('svg'), 'Pollen only works on the same kind of flower. Try again!');
+      moveBee(t.closest('svg')); bee.querySelector('.pd').style.display = 'none';
+      ctx.right(t.closest('svg'), 'Pollination! 🎉 Now fertilisation can happen in the ovary.');
+      step = 0; r++;
+      if (r >= 3) setTimeout(() => ctx.finish(), 1500); else setTimeout(setInst, 400);
+    }
+  });
+  setInst();
+}
+
+/* ---------- germination lab ---------- */
+const JARS = {
+  A: [{ n: 'Dry soil', icon: '🏜️', soil: '#d9b77a', g: [0, 0, 0, 0, 0] }, { n: 'Moist soil', icon: '💧', soil: '#6b4226', g: [0, 1, 3, 5, 5] }],
+  B: [{ n: 'Moist soil – cold place', icon: '❄️', soil: '#6b4226', g: [0, 0, 0, 1, 1], bg: '#e3f2fd' }, { n: 'Moist soil – warm place', icon: '☀️', soil: '#6b4226', g: [0, 2, 4, 5, 5], bg: '#fff3e0' }] };
+const DAYS = [0, 2, 4, 6, 8];
+function jarSVG(j, di) {
+  const xs = [20, 35, 50, 65, 80]; let seeds = '';
+  xs.forEach((x, k) => {
+    const y = 112; let gd = -1;
+    for (let d = 0; d <= di; d++) if (j.g[d] > k) { gd = d; break; }
+    if (gd >= 0) { const L = Math.min(52, 10 + (di - gd) * 10);
+      seeds += `<path d="M${x} ${y + 4} q -3 ${L / 2} 2 ${L}" stroke="#fffde7" stroke-width="2.4" fill="none"/>`;
+      seeds += `<path d="M${x} ${y - 4} q 3 ${-L / 2} 0 ${-L}" stroke="#4caf50" stroke-width="2.6" fill="none"/>`;
+      if (di - gd >= 2) seeds += `<ellipse cx="${x + 5}" cy="${y - L}" rx="5" ry="3" fill="#66bb6a" transform="rotate(-30 ${x + 5} ${y - L})"/>`;
+      seeds += `<ellipse cx="${x}" cy="${y}" rx="${gd >= 0 && di - gd >= 2 ? 5 : 7}" ry="5" fill="#a1887f" stroke="#5d4037"/>`;
+    } else seeds += `<ellipse cx="${x}" cy="${y}" rx="7" ry="5" fill="#d7ccc8" stroke="#5d4037"/>`;
+  });
+  return `<svg viewBox="0 0 100 190"><rect x="8" y="20" width="84" height="164" rx="10" fill="${j.bg || '#f5fbff'}" stroke="#90a4ae" stroke-width="3"/>
+    <rect x="11" y="44" width="78" height="137" rx="7" fill="${j.soil}"/><rect x="4" y="12" width="92" height="12" rx="4" fill="#b0bec5"/>${seeds}</svg>`;
+}
+function runLab(g, ctx) {
+  let part = 'A', di = 0; const solved = { A: false, B: false }; const saved = { A: {}, B: {} };
+  const draw = () => {
+    const js = JARS[part];
+    ctx.body.innerHTML = `<div class="inst">${g.inst}</div>
+      <div class="tabs"><button data-p="A" class="${part === 'A' ? 'on' : ''}">Part A ${solved.A ? '✅' : ''}</button><button data-p="B" class="${part === 'B' ? 'on' : ''}">Part B ${solved.B ? '✅' : ''}</button></div>
+      <div class="note">${part === 'A' ? 'Five seeds against the glass in each jar. Both jars are in the <b>same place</b>. One jar has <b>dry</b> soil, one has <b>moist</b> soil.' : 'Both jars have <b>moist</b> soil. One jar is in a <b>cold</b> place, one is in a <b>warm</b> place.'}</div>
+      <div class="days">${DAYS.map((d, k) => `<button data-d="${k}" class="${k === di ? 'on' : ''}">Day ${d}</button>`).join('')}</div>
+      <div class="jars">${js.map(j => `<div class="jar">${j.icon} ${j.n}<br>${jarSVG(j, di)}</div>`).join('')}</div>
+      <table class="res"><tr><th>Days</th>${js.map(j => `<th>${j.n}</th>`).join('')}</tr>
+      ${[2, 4].map(k => `<tr><td>${DAYS[k]}</td>${js.map((j, jj) => `<td><select data-a="${j.g[k]}" data-key="${k}-${jj}">${'<option value="">?</option>' + [0, 1, 2, 3, 4, 5].map(v => `<option>${v}</option>`).join('')}</select></td>`).join('')}</tr>`).join('')}
+      </table><p style="text-align:center;color:#6b6490;font-weight:700;margin:6px 0 0">A germinated seed has a white root and a green shoot. 🌱</p>
+      <button class="next" id="chk">${solved[part] ? '✅ Done' : '✔ Check table'}</button>`;
+    ctx.body.querySelectorAll('select').forEach(s => { const v = saved[part][s.dataset.key]; if (v !== undefined) s.value = v; if (solved[part]) { s.disabled = true; s.classList.add('ok'); }
+      s.onchange = () => { saved[part][s.dataset.key] = s.value; s.classList.remove('no'); }; });
+    ctx.body.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { part = b.dataset.p; di = 0; draw(); });
+    ctx.body.querySelectorAll('.days button').forEach(b => b.onclick = () => { di = +b.dataset.d; draw(); });
+    $('#chk').onclick = () => {
+      if (solved[part]) { if (!solved.A || !solved.B) { part = solved.A ? 'B' : 'A'; di = 0; draw(); } return; }
+      checkSelects(ctx, () => {
+        solved[part] = true; ctx.progress((solved.A + solved.B) / 2);
+        if (solved.A && solved.B) setTimeout(() => ctx.finish(), 900);
+        else { toast('Now try the other part! ➡', 'good'); setTimeout(() => { part = part === 'A' ? 'B' : 'A'; di = 0; draw(); }, 1000); }
+      });
+      ctx.progress((solved.A + solved.B) / 2);
+    };
+  };
+  draw();
+}
+
+/* ============ UNIT 2 GAMES ============ */
+function tone(freq, dur, vol, type) {
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime;
+    o.type = type || 'triangle'; o.frequency.value = freq;
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol || .2, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + (dur || .8));
+    o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + (dur || .8) + .05);
+  } catch (e) {}
+}
+function thud() { tone(90, .25, .3, 'square'); tone(140, .2, .15, 'triangle'); }
+
+/* run a list of steps: {tap:i, txt} | {act:'name', txt} | mcq item */
+function stepRunner(ctx, steps, taskEl, mcqEl) {
+  let k = 0; const api = {};
+  const show = () => {
+    if (!document.body.contains(taskEl)) return;
+    ctx.progress(k / steps.length);
+    if (k >= steps.length) { setTimeout(() => ctx.finish(), 600); return; }
+    const s = steps[k]; mcqEl.innerHTML = '';
+    if (s.q) { taskEl.innerHTML = '🤔 Answer the question below.'; mcq(mcqEl, s, ctx, () => { k++; show(); }); mcqEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    else taskEl.innerHTML = '🎯 ' + s.txt;
+  };
+  api.cur = () => steps[k];
+  api.tap = (i, el) => { const s = steps[k]; if (!s || s.tap === undefined) return; if (i === s.tap) { ctx.right(el); k++; setTimeout(show, 500); } else ctx.wrong(el, 'Listen again and try again! 👂'); };
+  api.act = name => { const s = steps[k]; if (s && s.act === name) { ctx.right(null); k++; setTimeout(show, 500); } };
+  show(); return api;
+}
+
+function runRice(g, ctx) {
+  const tried = new Set();
+  const grains = Array.from({ length: 14 }, (_, i) => `<ellipse cx="${62 + (i * 37) % 76}" cy="${54 - (i % 3) * 2}" rx="4" ry="2.4" fill="#fffde7" stroke="#bca" style="animation-delay:${(i % 5) * 40}ms"/>`).join('');
+  ctx.body.innerHTML = `<div class="inst">${g.inst}</div>
+    <svg viewBox="0 0 200 190" style="width:100%;max-width:300px;display:block;margin:0 auto" id="rj">
+      <rect x="52" y="64" width="96" height="116" rx="14" fill="#e3f2fd" stroke="#90a4ae" stroke-width="4"/>
+      <g id="wrap"><path d="M46 60 Q100 52 154 60 L154 66 Q100 58 46 66Z" fill="#b3e5fc" opacity=".9"/></g>
+      <rect x="48" y="66" width="104" height="6" fill="#ef476f"/>
+      <g id="rice">${grains}</g>
+    </svg>
+    <div class="btnrow">
+      <button class="act" data-a="0">✏️ Hit the jar with a pencil</button>
+      <button class="act" data-a="1">🥘 Bang the tin tray with a spoon, close to the jar</button>
+      <button class="act" data-a="2">👏 Clap your hands next to the jar</button>
+    </div><div class="note" id="cap">Tap a button and watch the rice grains!</div><div id="mq"></div>`;
+  const caps = ['The jar vibrates when you hit it. The vibrations travel to the plastic wrap, and the rice grains vibrate and move.',
+    'The vibrations travel from the tin tray to the air. The air vibrates and makes the plastic wrap vibrate. The rice grains jump!',
+    'Watch the rice grains when you clap!'];
+  ctx.body.querySelectorAll('.act').forEach(b => b.onclick = () => {
+    const a = +b.dataset.a; thud(); b.classList.add('tried'); tried.add(a);
+    ctx.body.querySelectorAll('#rice ellipse').forEach(e => { e.classList.remove('jumpy'); void e.getBBox(); e.classList.add('jumpy'); });
+    const w = $('#wrap'); w.classList.remove('wob'); void w.getBBox(); w.classList.add('wob');
+    $('#cap').textContent = caps[a]; ctx.progress(tried.size / 5);
+    if (tried.size === 3 && !$('#mq').innerHTML) {
+      const qs = [
+        { q: 'Did you hear a sound when you hit the jar? Why?', o: ['Yes – sounds are made when things vibrate, and the jar vibrated', 'No – glass cannot vibrate', 'Yes – the rice grains sang', 'No – sound cannot travel through glass'], a: 0 },
+        { q: 'Why did the rice grains move?', o: ['Vibrations travelled to the plastic wrap and made it vibrate', 'The wind blew them', 'The rice grains were alive', 'The jar got hot'], a: 0 }];
+      let i = 0; const nx = () => { ctx.progress(.6 + i * .2); if (i >= qs.length) return ctx.finish(); mcq($('#mq'), qs[i], ctx, () => { i++; nx(); }); $('#mq') && $('#mq').scrollIntoView({ behavior: 'smooth' }); };
+      setTimeout(nx, 1200);
+    }
+  });
+}
+
+function runWave(g, ctx) {
+  let size = 'small', speed = 'slow', raf;
+  const tasks = [
+    { txt: 'Make a LOUD sound.', need: { size: 'big' } },
+    { txt: 'Make a QUIET sound.', need: { size: 'small' } },
+    { txt: 'Make a HIGH-pitched sound.', need: { speed: 'fast' } },
+    { txt: 'Make a LOW-pitched sound.', need: { speed: 'slow' } },
+    { txt: 'Some singers make loud, low-pitched sounds. Make that sound!', need: { size: 'big', speed: 'slow' } },
+    { txt: 'The singers sing quietly and sing higher notes. Make that sound!', need: { size: 'small', speed: 'fast' } } ];
+  let k = 0;
+  ctx.body.innerHTML = `<div class="inst">${g.inst}</div><canvas class="wave" width="640" height="200"></canvas>
+    <div class="toggle"><b>Size of vibrations:</b><button data-s="small">Small</button><button data-s="big">Big</button></div>
+    <div class="toggle"><b>Speed of vibrations:</b><button data-v="slow">Slow</button><button data-v="fast">Fast</button></div>
+    <div class="task" id="tk"></div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="next" id="pl" style="margin-top:0">▶ Listen</button><button class="next" id="chk" style="margin-top:0">✔ Check</button></div>`;
+  const cv = ctx.body.querySelector('canvas'), c2 = cv.getContext('2d');
+  const paint = () => {
+    ctx.body.querySelectorAll('[data-s]').forEach(b => b.classList.toggle('on', b.dataset.s === size));
+    ctx.body.querySelectorAll('[data-v]').forEach(b => b.classList.toggle('on', b.dataset.v === speed));
+  };
+  let ph = 0;
+  const draw = () => {
+    if (!document.body.contains(cv)) return cancelAnimationFrame(raf);
+    const A = size === 'big' ? 70 : 18, cyc = speed === 'fast' ? 9 : 2.5;
+    c2.clearRect(0, 0, 640, 200); c2.lineWidth = 5; c2.strokeStyle = '#ffd23f'; c2.beginPath();
+    for (let x = 0; x <= 640; x += 4) { const y = 100 + A * Math.sin((x / 640) * cyc * 2 * Math.PI - ph); x ? c2.lineTo(x, y) : c2.moveTo(x, y); }
+    c2.stroke(); ph += speed === 'fast' ? .35 : .1; raf = requestAnimationFrame(draw);
+  };
+  const setTask = () => { ctx.progress(k / tasks.length); $('#tk').innerHTML = `🎯 ${k + 1}/${tasks.length}: ${tasks[k].txt}`; };
+  ctx.body.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { size = b.dataset.s; paint(); });
+  ctx.body.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { speed = b.dataset.v; paint(); });
+  $('#pl').onclick = () => tone(speed === 'fast' ? 880 : 160, 1, size === 'big' ? .35 : .04, 'sine');
+  $('#chk').onclick = () => {
+    const n = tasks[k].need;
+    if ((!n.size || n.size === size) && (!n.speed || n.speed === speed)) {
+      ctx.right($('#tk')); tone(speed === 'fast' ? 880 : 160, .7, size === 'big' ? .35 : .04, 'sine'); k++;
+      if (k >= tasks.length) setTimeout(() => ctx.finish(), 800); else setTimeout(setTask, 500);
+    } else ctx.wrong($('#tk'));
+  };
+  paint(); setTask(); draw();
+}
+
+function runGuitar(g, ctx) {
+  const base = [82, 110, 147, 196, 247, 330], th = [8, 6.5, 5, 4, 3, 2]; let tension = 1, tightPluck = false, loosePluck = false;
+  ctx.body.innerHTML = `<div class="inst">${g.inst}</div>
+    <div class="neck">${base.map((_, i) => `<div class="srow ${i === 2 ? 'red' : ''}" data-i="${i}"><div class="str" style="height:${th[i]}px"></div>${i === 0 ? '<span class="tg">thick string</span>' : i === 5 ? '<span class="tg">thin string</span>' : i === 2 ? '<span class="tg">red string</span>' : ''}</div>`).join('')}</div>
+    <div style="display:flex;gap:8px;justify-content:center;margin:10px 0;flex-wrap:wrap"><button class="act" id="tt">🔧 Tighten the red string</button><button class="act" id="ll">🔧 Loosen the red string</button></div>
+    <div class="task" id="tk"></div><div id="mq"></div>`;
+  const steps = [
+    { tap: 5, txt: 'Pluck the thick strings and the thin strings. Then tap the string that makes the HIGHEST-pitched note.' },
+    { tap: 0, txt: 'Now tap the string that makes the LOWEST-pitched note.' },
+    { q: 'The thicker the string, the … the note.', o: ['lower-pitched', 'higher-pitched'], a: 0, fixed: true },
+    { act: 'tight', txt: 'Pluck the red string. Then tap 🔧 Tighten and pluck the red string again.' },
+    { q: 'Does the sound have a higher or a lower pitch than before?', o: ['Higher', 'Lower'], a: 0, fixed: true },
+    { act: 'loose', txt: 'Now tap 🔧 Loosen two or three times and pluck the red string again.' },
+    { q: 'What happened to the pitch when you loosened the string?', o: ['It became lower', 'It became higher'], a: 0, fixed: true },
+    { q: 'The more tightly stretched the string, the … the note.', o: ['higher-pitched', 'lower-pitched'], a: 0, fixed: true } ];
+  const run = stepRunner(ctx, steps, $('#tk'), $('#mq'));
+  ctx.body.querySelectorAll('.srow').forEach(r => r.onclick = () => {
+    const i = +r.dataset.i, s = r.querySelector('.str'); s.classList.remove('vib'); void s.offsetWidth; s.classList.add('vib');
+    tone(base[i] * (i === 2 ? tension : 1) * 2, 1.1, .3, 'triangle');
+    const cur = run.cur();
+    if (cur && cur.tap !== undefined) run.tap(i, r);
+    if (i === 2 && cur && cur.act === 'tight' && tension > 1) run.act('tight');
+    if (i === 2 && cur && cur.act === 'loose' && tension < 1) run.act('loose');
+  });
+  $('#tt').onclick = () => { tension = Math.min(1.6, tension * 1.12); toast('Tighter! 🔧'); };
+  $('#ll').onclick = () => { tension = Math.max(.6, tension / 1.12); toast('Looser! 🔧'); };
+}
+
+function runBottles(g, ctx) {
+  const freqs = [262, 294, 330, 349, 392, 440, 494, 523];
+  const bottle = i => { const wl = 18 + i * 13; return `<svg viewBox="0 0 60 170" data-i="${i}">
+      <path d="M22 4 h16 v30 q0 10 10 18 q10 8 10 22 v88 q0 6 -6 6 h-44 q-6 0 -6 -6 v-88 q0 -14 10 -22 q10 -8 10 -18z" fill="#f5fbff" stroke="#90a4ae" stroke-width="3"/>
+      <rect x="5" y="${162 - wl}" width="50" height="${wl}" rx="4" fill="#4fc3f7" opacity=".85"/>
+      <text x="30" y="20" text-anchor="middle" font-size="13" font-weight="800" fill="#2b2350">${i + 1}</text></svg>`; };
+  ctx.body.innerHTML = `<div class="inst">${g.inst}</div><div class="bottles">${freqs.map((_, i) => bottle(i)).join('')}</div>
+    <div class="task" id="tk"></div><div id="mq"></div>`;
+  const steps = [
+    { tap: 0, txt: 'Blow across each bottle (tap it). Then tap the bottle that makes the LOWEST pitch.' },
+    { tap: 7, txt: 'Now tap the bottle that makes the HIGHEST pitch.' },
+    { q: 'Which bottle has the longest column of air?', o: ['Bottle 1 – it has the least water', 'Bottle 8 – it has the most water'], a: 0, fixed: true },
+    { q: 'When you blow across a bottle, what vibrates to make the sound?', o: ['The air inside the bottle', 'The table', 'The food colouring', 'The jug'], a: 0 },
+    { q: 'The longer the column of air, the … the pitch of the sound.', o: ['lower', 'higher'], a: 0, fixed: true },
+    { q: 'The bottles act like a…', o: ['wind instrument', 'stringed instrument', 'sound level meter', 'loudspeaker'], a: 0 } ];
+  const run = stepRunner(ctx, steps, $('#tk'), $('#mq'));
+  ctx.body.querySelectorAll('.bottles svg').forEach(b => b.onclick = () => {
+    const i = +b.dataset.i; popEl(b); tone(freqs[i], .9, .25, 'sine'); tone(freqs[i] * 2, .5, .03, 'sine'); run.tap(i, b);
+  });
+}
+
+/* ============ UNIT 3 GAMES ============ */
+function particleSim(cv, getMode) {
+  const c2 = cv.getContext('2d'), W = cv.width, H = cv.height, R = 11; let ps = [], mode = null, raf;
+  const build = m => {
+    mode = m; ps = [];
+    if (m === 'solid') { for (let r = 0; r < 4; r++) for (let c = 0; c < 7; c++) ps.push({ hx: 60 + c * 24, hy: H - 30 - r * 24 }); }
+    if (m === 'liquid') { for (let i = 0; i < 24; i++) ps.push({ x: 40 + Math.random() * (W - 80), y: H - 20 - Math.random() * 95, vx: (Math.random() - .5) * 1.4, vy: (Math.random() - .5) * 1.4 }); }
+    if (m === 'gas') { for (let i = 0; i < 9; i++) ps.push({ x: 20 + Math.random() * (W - 40), y: 20 + Math.random() * (H - 40), vx: (Math.random() - .5) * 9, vy: (Math.random() - .5) * 9 }); }
+  };
+  const frame = () => {
+    if (!document.body.contains(cv)) return cancelAnimationFrame(raf);
+    const m = getMode(); if (m !== mode) build(m);
+    c2.clearRect(0, 0, W, H); c2.fillStyle = '#eef6ff'; c2.fillRect(0, 0, W, H);
+    ps.forEach(p => {
+      let x, y;
+      if (mode === 'solid') { x = p.hx + (Math.random() - .5) * 3; y = p.hy + (Math.random() - .5) * 3; }
+      else {
+        p.x += p.vx; p.y += p.vy;
+        const top = mode === 'liquid' ? H - 125 : R;
+        if (p.x < R || p.x > W - R) p.vx *= -1; if (p.y < top || p.y > H - R) p.vy *= -1;
+        p.x = Math.max(R, Math.min(W - R, p.x)); p.y = Math.max(top, Math.min(H - R, p.y));
+        if (mode === 'liquid') { p.vx += (Math.random() - .5) * .3; p.vy += (Math.random() - .5) * .3; p.vx = Math.max(-1.5, Math.min(1.5, p.vx)); p.vy = Math.max(-1.5, Math.min(1.5, p.vy)); }
+        x = p.x; y = p.y;
+      }
+      c2.beginPath(); c2.arc(x, y, R, 0, 7); c2.fillStyle = '#3a6fd8'; c2.fill(); c2.lineWidth = 2; c2.strokeStyle = '#1b3e8a'; c2.stroke();
+    });
+    raf = requestAnimationFrame(frame);
+  };
+  frame();
+}
+function runParticles(g, ctx) {
+  const rounds = shuffle(['solid', 'liquid', 'gas', 'solid', 'liquid', 'gas']); let k = 0;
+  ctx.body.innerHTML = `<div class="inst">${g.inst}</div><canvas width="300" height="220" style="width:100%;max-width:420px;display:block;margin:0 auto;border-radius:18px;border:3px solid #cbbcff"></canvas>
+    <div class="task" id="tk"></div>
+    <div class="bins" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+      <button class="bin" data-m="solid" style="background:#7b2ff7"><span class="bi">🧱</span>Solid</button>
+      <button class="bin" data-m="liquid" style="background:#3a86ff"><span class="bi">💧</span>Liquid</button>
+      <button class="bin" data-m="gas" style="background:#2ec4b6"><span class="bi">🎈</span>Gas</button></div>`;
+  particleSim(ctx.body.querySelector('canvas'), () => rounds[Math.min(k, rounds.length - 1)]);
+  const setT = () => { ctx.progress(k / rounds.length); $('#tk').textContent = `🎯 ${k + 1}/${rounds.length}: Which state of matter is this?`; };
+  ctx.body.querySelectorAll('.bin').forEach(b => b.onclick = () => {
+    if (k >= rounds.length) return;
+    if (b.dataset.m === rounds[k]) { ctx.right(b); k++; if (k >= rounds.length) setTimeout(() => ctx.finish(), 700); else setT(); }
+    else ctx.wrong(b, 'Look at the spaces and the movement. Try again! 🔍');
+  });
+  setT();
+}
+
+function runThermo(g, ctx) {
+  let t = 20;
+  const tasks = [
+    { txt: 'Set the thermometer to the melting point of ice.', v: 0 },
+    { txt: 'Set the thermometer to the boiling point of pure water.', v: 100 },
+    { txt: 'Set the thermometer to the temperature at which pure water freezes.', v: 0 } ];
+  const qs = [
+    { q: 'Pure water at –20 °C is…', o: ['solid (ice)', 'liquid (water)', 'gas (steam)'], a: 0, fixed: true },
+    { q: 'Pure water at 60 °C is…', o: ['liquid (water)', 'solid (ice)', 'gas (steam)'], a: 0, fixed: true },
+    { q: 'What do we use to measure temperature, and what is the unit?', o: ['A thermometer; degrees centigrade (°C)', 'A sound level meter; decibels (dB)', 'A ruler; centimetres (cm)', 'A clock; minutes'], a: 0 } ];
+  let k = 0;
+  ctx.body.innerHTML = `<div class="inst">${g.inst}</div>
+    <div style="display:flex;gap:16px;align-items:center;justify-content:center">
+      <svg viewBox="0 0 90 300" style="width:90px;height:300px">
+        <rect x="35" y="10" width="20" height="250" rx="10" fill="#fff" stroke="#90a4ae" stroke-width="3"/>
+        <circle cx="45" cy="268" r="20" fill="#ef476f" stroke="#90a4ae" stroke-width="3"/>
+        <rect id="mer" x="40" y="0" width="10" height="0" fill="#ef476f"/>
+        ${[-20, 0, 20, 40, 60, 80, 100, 120].map(v => { const y = 250 - (v + 20) * 1.6; return `<line x1="55" x2="66" y1="${y}" y2="${y}" stroke="#2b2350" stroke-width="2"/><text x="68" y="${y + 4}" font-size="11" font-weight="700" fill="#2b2350">${v}</text>`; }).join('')}
+      </svg>
+      <div style="text-align:center"><div id="tv" style="font-size:40px;font-weight:800;color:#ef476f"></div><div id="st" style="font-size:54px"></div><div id="sn" style="font-size:20px;font-weight:800"></div></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;margin:8px 0"><button class="next" id="dn" style="margin:0">▼ 10 °C</button><button class="next" id="up" style="margin:0">▲ 10 °C</button></div>
+    <div class="task" id="tk"></div><button class="next" id="chk">✔ Check</button><div id="mq"></div>`;
+  const draw = () => {
+    const h = (t + 20) * 1.6; const m = $('#mer'); m.setAttribute('y', 250 - h); m.setAttribute('height', h + 10);
+    $('#tv').textContent = t + ' °C';
+    const s = t < 0 ? ['🧊', 'Ice – solid'] : t === 0 ? ['🧊💧', 'Melting / freezing'] : t < 100 ? ['💧', 'Water – liquid'] : t === 100 ? ['🫧', 'Boiling'] : ['♨️', 'Steam – gas'];
+    $('#st').textContent = s[0]; $('#sn').textContent = s[1];
+  };
+  $('#up').onclick = () => { if (t < 120) { t += 10; draw(); } };
+  $('#dn').onclick = () => { if (t > -20) { t -= 10; draw(); } };
+  const setT = () => { ctx.progress(k / (tasks.length + qs.length)); $('#tk').textContent = '🎯 ' + tasks[k].txt; };
+  $('#chk').onclick = () => {
+    if (t === tasks[k].v) {
+      ctx.right($('#tk')); k++;
+      if (k < tasks.length) setT();
+      else { $('#chk').remove(); $('#tk').textContent = '🤔 Use the thermometer to help you answer.'; let i = 0;
+        const nx = () => { ctx.progress((tasks.length + i) / (tasks.length + qs.length)); if (i >= qs.length) return ctx.finish(); mcq($('#mq'), qs[i], ctx, () => { i++; nx(); }); };
+        nx(); }
+    } else ctx.wrong($('#tk'));
+  };
+  draw(); setT();
+}
+
+function runDissolve(g, ctx) {
+  const cv = document.createElement('canvas'); cv.width = 320; cv.height = 220;
+  const water = [], salt = []; let stage = 0, from = 0, to = 0, anim = 0;
+  for (let r = 0; r < 7; r++) for (let c = 0; c < 11; c++) water.push({ x: 22 + c * 28 + (r % 2) * 10, y: 22 + r * 28 });
+  for (let i = 0; i < 16; i++) { const tw = water[Math.floor(Math.random() * water.length)];
+    salt.push({ sx: 130 + (i % 4) * 14, sy: 190 - Math.floor(i / 4) * 14, tx: 8 + Math.random() * 304, ty: 8 + Math.random() * 204 }); }
+  // spread target evenly on a grid between water particles
+  salt.forEach((s, i) => { s.tx = 36 + (i % 4) * 78 + (Math.floor(i / 4) % 2) * 30; s.ty = 36 + Math.floor(i / 4) * 52; });
+  ctx.body.innerHTML = `<div class="inst">${g.inst}</div><div id="cvw" style="text-align:center"></div>
+    <div class="legend"><span><i style="background:#90caf9"></i>water particles</span><span><i style="background:#fff;border:2px solid #555"></i>salt particles</span></div>
+    <button class="next" id="stir">🥄 Stir</button><div id="mq"></div>`;
+  cv.style.cssText = 'width:100%;max-width:420px;border-radius:18px;border:3px solid #cbbcff';
+  $('#cvw').appendChild(cv); const c2 = cv.getContext('2d');
+  const paint = () => {
+    if (!document.body.contains(cv)) return;
+    if (anim < 1) { anim = Math.min(1, anim + .04); requestAnimationFrame(paint); }
+    const p = from + (to - from) * anim;
+    c2.fillStyle = '#f5fbff'; c2.fillRect(0, 0, 320, 220);
+    water.forEach(w => { c2.beginPath(); c2.arc(w.x, w.y, 9, 0, 7); c2.fillStyle = '#90caf9'; c2.fill(); });
+    salt.forEach(s => { c2.beginPath(); c2.arc(s.sx + (s.tx - s.sx) * p, s.sy + (s.ty - s.sy) * p, 7, 0, 7); c2.fillStyle = '#fff'; c2.fill(); c2.lineWidth = 2; c2.strokeStyle = '#555'; c2.stroke(); });
+  };
+  paint();
+  const qs = [
+    { q: 'What happened to the salt particles?', o: ['They spread out evenly between the water particles', 'They stayed in a pile at the bottom', 'They turned into water particles', 'They floated away into the air'], a: 0 },
+    { q: 'In this solution, which is the solute?', o: ['Salt', 'Water'], a: 0, fixed: true },
+    { q: 'Which is the solvent?', o: ['Water', 'Salt'], a: 0, fixed: true },
+    { q: 'Why can\'t you see the salt after it has dissolved?', o: ['The salt particles spread evenly in the water, so the solution looks the same throughout', 'The salt was destroyed', 'The salt turned into a gas', 'The salt sank to the bottom'], a: 0 } ];
+  $('#stir').onclick = () => {
+    if (stage >= 3) return; from = stage / 3; stage++; to = stage / 3; anim = 0; paint(); beep(true); ctx.progress(stage / 3 * .4);
+    if (stage === 3) { $('#stir').remove(); let i = 0; const nx = () => { ctx.progress(.4 + i / qs.length * .6); if (i >= qs.length) return ctx.finish(); mcq($('#mq'), qs[i], ctx, () => { i++; nx(); }); $('#mq') && $('#mq').scrollIntoView({ behavior: 'smooth' }); }; setTimeout(nx, 1100); }
+    else toast('Keep stirring! 🥄');
+  };
+}
+
+home();
+</script>
+</body>
+</html>
