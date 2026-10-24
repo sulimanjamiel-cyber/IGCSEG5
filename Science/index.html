@@ -1084,7 +1084,7 @@ function home() {
       <div><div class="lbl">Unit ${u.id}</div><div class="nm">${u.title}</div>
       <div class="st">${u.locked ? '🔒 Coming soon' : '⭐ ' + unitStars(u) + ' / ' + unitMax(u)}</div></div>
     </button>`).join('')}</div>
-  <div class="credit">مع تحيات سليمان جميل<span class="ph">0097451085117</span></div>`;
+  <div class="credit" style="font-family:'Baloo 2',sans-serif">Developed by Suliman Jamiel: <span style="direction:ltr;unicode-bidi:embed;color:var(--pink)">+97451085117</span></div>`;
   app.querySelectorAll('.tile').forEach(b => b.onclick = () => {
     const u = UNITS.find(x => x.id == b.dataset.u);
     if (u.locked) { toast('This unit is coming soon! 🔒'); shake(b); return; }
